@@ -1,10 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
 
-URL = 'http://192.168.2.63'
 
-def get_readings():
-    page = requests.get(URL)
+URLS = ['http://192.168.2.63', 'http://192.168.2.64']
+
+
+def extract_readings(page):
     soup = BeautifulSoup(page.content, 'html.parser')
     # Temperature
     temperature_item = soup.find(id='temperature')
@@ -21,5 +22,11 @@ def get_readings():
     return (temperature, humidity)
 
 
-readings = get_readings()
-print("Readings", readings)
+for url in URLS:
+    try:
+        response = requests.get(url)
+        readings = extract_readings(response)
+        print("URL", url, "readings", readings)
+    except requests.exceptions.RequestException as e:
+        _ = e  # sprint(e)
+        print("URL", url, "no response")
