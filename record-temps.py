@@ -1,3 +1,4 @@
+import csv
 import requests
 import sched
 import time
@@ -29,23 +30,31 @@ def extract_readings(page):
     return (temperature, humidity)
 
 
-def get_pages():
+def get_pages(csv_writer):
     for url, location in LOCATIONS:
         try:
             response = requests.get(url)
-            readings = extract_readings(response)
-            print("{0:10s}: {1:4}C, {2:4}%".format(location, readings[0], readings[1]))
+            (temperature, humidity) = extract_readings(response)
+            print("{0:10s}: {1:4}C, {2:4}%".format(location, temperature, humidity))
+            csv_writer.writerow([location, temperature, humidity])
         except requests.exceptions.RequestException as e:
-            _ = e  # sprint(e)
+            _ = e  # print(e)
             print(location, "no response")
-    # Queue next action
-    scheduler.enter(INTERVAL_TIME_S, 1, get_pages)
+    # Queue next action.
+    scheduler.enter(INTERVAL_TIME_S, 1, get_pages, argument=(csv_writer,))
 
 
 def main():
-    get_pages()
-    # Run until all actions complete.
-    scheduler.run()
+    # Open CSV file.
+    with open("temperatures.csv", "w", newline="") as csvfile:
+        csv_writer = csv.writer(
+            csvfile, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
+        )
+        csv_writer.writerow(["Location", "Temperature", "Humidity"])
+        # Get pages.
+        get_pages(csv_writer)
+        # Run until all actions complete.
+        scheduler.run()
 
 
 if __name__ == "__main__":
@@ -53,4 +62,4 @@ if __name__ == "__main__":
 
 # Add location to each URL. DONE.
 # Get pages every 1 minute. DONE.
-# Save readings to file with location and time stamp.
+# Save readings to file with location and time stamp. DONE.
