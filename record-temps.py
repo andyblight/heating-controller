@@ -1,4 +1,5 @@
 import csv
+from datetime import datetime
 import requests
 import sched
 import time
@@ -35,8 +36,10 @@ def get_pages(csv_writer):
         try:
             response = requests.get(url)
             (temperature, humidity) = extract_readings(response)
-            print("{0:10s}: {1:4}C, {2:4}%".format(location, temperature, humidity))
-            csv_writer.writerow([location, temperature, humidity])
+            time_now = datetime.now()
+            timestamp_seconds = int(time_now.timestamp())
+            print("{0:12d} {1:10s}: {2:4}C, {3:4}%".format(timestamp_seconds, location, temperature, humidity))
+            csv_writer.writerow([timestamp_seconds, location, temperature, humidity])
         except requests.exceptions.RequestException as e:
             _ = e  # print(e)
             print(location, "no response")
@@ -50,7 +53,7 @@ def main():
         csv_writer = csv.writer(
             csvfile, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
-        csv_writer.writerow(["Location", "Temperature", "Humidity"])
+        csv_writer.writerow(["Timestamp", "Location", "Temperature", "Humidity"])
         # Get pages.
         get_pages(csv_writer)
         # Run until all actions complete.
