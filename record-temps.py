@@ -31,7 +31,7 @@ def extract_readings(page):
     return (temperature, humidity)
 
 
-def get_pages(csv_writer):
+def get_pages(csv_file, csv_writer):
     for url, location in LOCATIONS:
         try:
             response = requests.get(url)
@@ -40,22 +40,23 @@ def get_pages(csv_writer):
             timestamp_seconds = int(time_now.timestamp())
             print("{0:12d} {1:10s}: {2:4}C, {3:4}%".format(timestamp_seconds, location, temperature, humidity))
             csv_writer.writerow([timestamp_seconds, location, temperature, humidity])
+            csv_file.flush()
         except requests.exceptions.RequestException as e:
             _ = e  # print(e)
             print(location, "no response")
     # Queue next action.
-    scheduler.enter(INTERVAL_TIME_S, 1, get_pages, argument=(csv_writer,))
+    scheduler.enter(INTERVAL_TIME_S, 1, get_pages, argument=(csv_file, csv_writer,))
 
 
 def main():
     # Open CSV file.
-    with open("temperatures.csv", "w", newline="") as csvfile:
+    with open("temperatures.csv", "w", newline="") as csv_file:
         csv_writer = csv.writer(
-            csvfile, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
+            csv_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
         csv_writer.writerow(["Timestamp", "Location", "Temperature", "Humidity"])
         # Get pages.
-        get_pages(csv_writer)
+        get_pages(csv_file, csv_writer)
         # Run until all actions complete.
         scheduler.run()
 
