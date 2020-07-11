@@ -1,5 +1,5 @@
 import csv
-from datetime import datetime
+from datetime import datetime, date
 import requests
 import sched
 import time
@@ -7,7 +7,7 @@ import time
 # pip3 imports
 from bs4 import BeautifulSoup
 
-LOCATIONS = [["Upstairs", "http://192.168.2.63"], ["Downstairs", "http://192.168.2.64"]]
+LOCATIONS = [["upstairs-landing", "http://192.168.2.63"], ["downstairs-back-room", "http://192.168.2.64"]]
 INTERVAL_TIME_S = 5
 # INTERVAL_TIME_S = 60
 
@@ -25,12 +25,13 @@ class TemperatureReader:
         self.csv_writer = None
 
     def open_file(self):
-        file_name = self.location + ".csv"
+        today = date.today()
+        file_name = today.isoformat() + "-" + self.location + ".csv"
         self.csv_file = open(file_name, "w", newline="")
         self.csv_writer = csv.writer(
             self.csv_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
-        self.csv_writer.writerow(["Timestamp", "Location", "Temperature", "Humidity"])
+        self.csv_writer.writerow(["Time", "Temperature", "Humidity"])
         self.csv_file.flush()
 
     def close_file(self):
@@ -63,14 +64,14 @@ class TemperatureReader:
 
     def write_to_file(self):
         time_now = datetime.now()
-        timestamp_seconds = int(time_now.timestamp())
+        time_str = time_now.strftime("%H:%M")
         print(
-            "{0:12d} {1:10s}: {2:4}C, {3:4}%".format(
-                timestamp_seconds, self.location, self.temperature, self.humidity
+            "{0:5s} {1:20s}: {2:4}C, {3:4}%".format(
+                time_str, self.location, self.temperature, self.humidity
             )
         )
         self.csv_writer.writerow(
-            [timestamp_seconds, self.location, self.temperature, self.humidity]
+            [time_str, self.temperature, self.humidity]
         )
         self.csv_file.flush()
 
