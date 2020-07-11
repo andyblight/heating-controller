@@ -7,7 +7,10 @@ import time
 # pip3 imports
 from bs4 import BeautifulSoup
 
-LOCATIONS = [["upstairs-landing", "http://192.168.2.63"], ["downstairs-back-room", "http://192.168.2.64"]]
+LOCATIONS = [
+    ["upstairs-landing", "http://192.168.2.63"],
+    ["downstairs-back-room", "http://192.168.2.64"],
+]
 INTERVAL_TIME_S = 5
 # INTERVAL_TIME_S = 60
 
@@ -23,10 +26,11 @@ class TemperatureReader:
         self.humidity = 0
         self.csv_file = None
         self.csv_writer = None
+        self.today = 0
 
     def open_file(self):
-        today = date.today()
-        file_name = today.isoformat() + "-" + self.location + ".csv"
+        self.today = date.today()
+        file_name = self.today.isoformat() + "-" + self.location + ".csv"
         self.csv_file = open(file_name, "w", newline="")
         self.csv_writer = csv.writer(
             self.csv_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
@@ -37,15 +41,6 @@ class TemperatureReader:
     def close_file(self):
         self.csv_writer = None
         self.csv_file.close()
-
-    def get_temps(self):
-        try:
-            page = requests.get(self.url)
-            self.extract_readings(page)
-            self.write_to_file()
-        except requests.exceptions.RequestException as e:
-            _ = e  # print(e)
-            print(location, "no response")
 
     def extract_readings(self, page):
         soup = BeautifulSoup(page.content, "html.parser")
@@ -70,14 +65,27 @@ class TemperatureReader:
                 time_str, self.location, self.temperature, self.humidity
             )
         )
-        self.csv_writer.writerow(
-            [time_str, self.temperature, self.humidity]
-        )
+        self.csv_writer.writerow([time_str, self.temperature, self.humidity])
         self.csv_file.flush()
+
+    def get_temps(self):
+        try:
+            page = requests.get(self.url)
+            self.extract_readings(page)
+            self.write_to_file()
+        except requests.exceptions.RequestException as e:
+            print(location, "no response", e)
+
+    def change_files(self):
+        today = date.today()
+        if self.today != today:
+            self.close_file()
+            self.open_file()
 
 
 def timed_read(readers):
     for reader in readers:
+        reader.change_files()
         reader.get_temps()
     # Queue next action.
     scheduler.enter(INTERVAL_TIME_S, 1, timed_read, argument=(readers,))
@@ -101,9 +109,6 @@ if __name__ == "__main__":
 # Add location to each URL. DONE.
 # Get pages every 1 minute. DONE.
 # Save readings to file with location and time stamp. DONE.
-# Create daily file for each location.
-# Change timestamp to human readable times.
-
-# Entities
-# Files
-# Locations
+# Create daily file for each location. DONE.
+# Change timestamp to human readable times. DONE.
+# Auto change over of files at midnight.
