@@ -14,7 +14,7 @@ LOCATIONS = [
     ["downstairs-back-room", "http://192.168.2.64"],
 ]
 INTERVAL_TIME_S = 5
-# INTERVAL_TIME_S = 60
+# INTERVAL_TIME_S = 60 * 5
 
 # Set up scheduler
 scheduler = sched.scheduler(time.time, time.sleep)

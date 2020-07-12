@@ -31,7 +31,7 @@ f_today = None
 
 
 def open_file():
-    print("of")
+    # print("of")
     global f_today, f_csv_file, f_csv_writer
     f_today = date.today()
     file_name = f_today.isoformat() + "-external" + ".csv"
@@ -45,10 +45,11 @@ def open_file():
         )
     except OSError as err:
         print("OS error: {0}".format(err))
-    print("f_today", f_today)
+    # print("f_today", f_today)
+
 
 def close_file():
-    print("clf")
+    # print("clf")
     global f_csv_file, f_csv_writer
     f_csv_writer = None
     if f_csv_file:
@@ -56,19 +57,19 @@ def close_file():
 
 
 def write_to_file(temperature, humidity, wind, degrees, gust):
-    print("wtf")
+    # print("wtf")
     global f_csv_file, f_csv_writer
     time_now = datetime.now()
     time_str = time_now.strftime("%H:%M")
-    f_csv_writer.writerow([time_str, temperature_str, humidity, wind, degrees, gust])
+    f_csv_writer.writerow([time_str, temperature, humidity, wind, degrees, gust])
     f_csv_file.flush()
 
 
 def change_file():
-    print("chf")
+    # print("chf")
     global f_today
     today = date.today()
-    print("f_today", f_today, "today", today)
+    # print("f_today", f_today, "today", today)
     if f_today != today:
         close_file()
         open_file()
@@ -76,14 +77,14 @@ def change_file():
 
 def get_current_weather():
     json_data = requests.get(OPEN_WEATHER_URL).json()
-    print(json_data)
+    # print(json_data)
     df = pandas.DataFrame(json_data["main"], index=[0])
     # print(df.to_string())
     #     temp  feels_like  temp_min  temp_max  pressure  humidity
     # 0  293.4      292.37    291.48    295.37      1025        46
     temperature = df["temp"][0] - DEGREES_KELVIN
     humidity = df["humidity"][0]
-    print("temperature {:.1f}C, humidity {:d}%".format(temperature, humidity))
+    # print("temperature {:.1f}C, humidity {:d}%".format(temperature, humidity))
     df = pandas.DataFrame(json_data["wind"], index=[0])
     # print(df.to_string())
     #    speed  deg  gust
@@ -94,11 +95,11 @@ def get_current_weather():
         wind_gust = df["gust"][0]
     except KeyError:
         wind_gust = 0.0
-    print(
-        "wind speed {:.2f}, degrees {:d}, gust {:.2f}".format(
-            wind_speed, wind_degrees, wind_gust
-        )
-    )
+    # print(
+    #     "wind speed {:.2f}, degrees {:d}, gust {:.2f}".format(
+    #         wind_speed, wind_degrees, wind_gust
+    #     )
+    # )
     write_to_file(temperature, humidity, wind_speed, wind_degrees, wind_gust)
 
 
