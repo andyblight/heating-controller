@@ -111,4 +111,4 @@ if __name__ == "__main__":
 # Save readings to file with location and time stamp. DONE.
 # Create daily file for each location. DONE.
 # Change timestamp to human readable times. DONE.
-# Auto change over of files at midnight.
+# Auto change over of files at midnight. DONE.
