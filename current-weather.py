@@ -18,8 +18,8 @@ INTERVAL_TIME_S = 5
 
 # API call.
 # Tested this using a browser.
-OPEN_WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?id=2640132&appid=96f114b6e51c0d7e6de6f4f19dd522ee"
-
+OPEN_WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?id=2640132&appid="
+API_KEY_FILE = "/home/andy/secrets/open-weather-api-key"
 DEGREES_KELVIN = 273.15
 
 # Set up scheduler
@@ -29,6 +29,12 @@ f_csv_file = None
 f_csv_writer = None
 f_today = None
 
+
+def read_api_key():
+    api_key = ""
+    with open(API_KEY_FILE, "r") as key_file:
+        api_key = key_file.read()
+    return api_key
 
 def open_file():
     # print("of")
@@ -76,7 +82,11 @@ def change_file():
 
 
 def get_current_weather():
-    json_data = requests.get(OPEN_WEATHER_URL).json()
+    api_key = read_api_key()
+    # print("api key:", api_key)
+    url = OPEN_WEATHER_URL + api_key
+    # print("url:", url)
+    json_data = requests.get(url).json()
     # print(json_data)
     df = pandas.DataFrame(json_data["main"], index=[0])
     # print(df.to_string())
