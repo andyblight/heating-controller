@@ -83,7 +83,7 @@ def change_file():
 
 def get_current_weather():
     api_key = read_api_key()
-    print("api key:", api_key)
+    # print("api key:", api_key)
     url = OPEN_WEATHER_URL + api_key
     # print("url:", url)
     json_data = requests.get(url).json()
