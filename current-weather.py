@@ -42,7 +42,7 @@ def open_file():
     f_today = date.today()
     file_name = f_today.isoformat() + "-external" + ".csv"
     try:
-        f_csv_file = open(file_name, "w", newline="")
+        f_csv_file = open(file_name, "a", newline="")
         f_csv_writer = csv.writer(
             f_csv_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
