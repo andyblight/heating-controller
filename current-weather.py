@@ -13,8 +13,8 @@ from bs4 import BeautifulSoup
 import pandas
 
 
-INTERVAL_TIME_S = 5
-# INTERVAL_TIME_S = 60 * 5
+# INTERVAL_TIME_S = 5
+INTERVAL_TIME_S = 60 * 5
 
 # API call.
 # Tested this using a browser.

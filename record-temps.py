@@ -13,8 +13,8 @@ LOCATIONS = [
     ["upstairs-landing", "http://192.168.2.63"],
     ["downstairs-back-room", "http://192.168.2.64"],
 ]
-INTERVAL_TIME_S = 5
-# INTERVAL_TIME_S = 60 * 5
+# INTERVAL_TIME_S = 5
+INTERVAL_TIME_S = 60 * 5
 
 # Set up scheduler
 scheduler = sched.scheduler(time.time, time.sleep)
@@ -33,7 +33,7 @@ class TemperatureReader:
     def open_file(self):
         self.today = date.today()
         file_name = self.today.isoformat() + "-" + self.location + ".csv"
-        self.csv_file = open(file_name, "w", newline="")
+        self.csv_file = open(file_name, "a", newline="")
         self.csv_writer = csv.writer(
             self.csv_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
@@ -62,11 +62,11 @@ class TemperatureReader:
     def write_to_file(self):
         time_now = datetime.now()
         time_str = time_now.strftime("%H:%M")
-        print(
-            "{0:5s} {1:20s}: {2:4}C, {3:4}%".format(
-                time_str, self.location, self.temperature, self.humidity
-            )
-        )
+        # print(
+        #     "{0:5s} {1:20s}: {2:4}C, {3:4}%".format(
+        #         time_str, self.location, self.temperature, self.humidity
+        #     )
+        # )
         self.csv_writer.writerow([time_str, self.temperature, self.humidity])
         self.csv_file.flush()
 
