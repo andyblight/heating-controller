@@ -118,6 +118,8 @@ void setup(){
   Serial.begin(115200);
   dht.begin();
 
+  // Set Wi-Fi to station mode.
+  WiFi.mode(WIFI_STA);
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);
   Serial.println("Connecting to WiFi");
