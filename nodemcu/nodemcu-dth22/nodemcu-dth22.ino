@@ -13,8 +13,8 @@
 #include <DHT.h>
 
 // Replace with your network credentials
-const char* ssid = "your ssid";
-const char* password = "your password";
+const char* ssid = "TP-LINK_AP_8670";
+const char* password = "17Defer2TheMaster";
 
 #define DHTPIN 5     // Digital pin connected to the DHT sensor
 
@@ -116,20 +116,33 @@ String processor(const String& var){
 void setup(){
   // Serial port for debugging purposes
   Serial.begin(115200);
+  delay(10);
   dht.begin();
 
-  // Set Wi-Fi to station mode.
+  Serial.println("\nStarting WiFi.");
+  // Set host name with MAC address
+  String mac = WiFi.macAddress();
+  String mac_last_3;
+  // Format of string is xx:xx:xx:xx:xx:xx.
+  //                     01234567890123456
+  for (int i = 9; i < 16; i += 3) {
+    mac_last_3 += mac.substring(i, i + 2);
+  }
+  String host_name = "Sensor" + mac_last_3;
+  WiFi.hostname(host_name);
+  // Set Wi-Fi to act as client only.
   WiFi.mode(WIFI_STA);
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);
-  Serial.println("Connecting to WiFi");
   while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println(".");
+    delay(500);
+    Serial.print(".");
   }
-
-  // Print ESP8266 Local IP Address
-  Serial.println(WiFi.localIP());
+  // Print IP connection details
+  Serial.print("\nConnected: IPv4: ");
+  Serial.print(WiFi.localIP());
+  Serial.print(", Hostname: ");
+  Serial.println(host_name);
 
   // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){

@@ -6,9 +6,10 @@ time to work on this project.
 
 ## BUGS
 
-* Add name that is visible to
-
 ## TODO
+
+* Add name for each sensor that is visible to IP address scanners (like on
+my phone).
 
 ## DONE
 

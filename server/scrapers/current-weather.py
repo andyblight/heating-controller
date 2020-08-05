@@ -36,6 +36,7 @@ def read_api_key():
         api_key = key_file.read()
     return api_key.strip()
 
+
 def open_file():
     # print("of")
     global f_today, f_csv_file, f_csv_writer
@@ -67,7 +68,8 @@ def write_to_file(temperature, humidity, wind, degrees, gust):
     global f_csv_file, f_csv_writer
     time_now = datetime.now()
     time_str = time_now.strftime("%H:%M")
-    f_csv_writer.writerow([time_str, temperature, humidity, wind, degrees, gust])
+    f_csv_writer.writerow(
+        [time_str, temperature, humidity, wind, degrees, gust])
     f_csv_file.flush()
 
 
@@ -94,7 +96,8 @@ def get_current_weather():
     # 0  293.4      292.37    291.48    295.37      1025        46
     temperature = df["temp"][0] - DEGREES_KELVIN
     humidity = df["humidity"][0]
-    # print("temperature {:.1f}C, humidity {:d}%".format(temperature, humidity))
+    # print(
+    #   "temperature {:.1f}C, humidity {:d}%".format(temperature, humidity))
     df = pandas.DataFrame(json_data["wind"], index=[0])
     # print(df.to_string())
     #    speed  deg  gust
@@ -130,4 +133,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

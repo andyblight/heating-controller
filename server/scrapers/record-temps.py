@@ -10,8 +10,9 @@ import time
 from bs4 import BeautifulSoup
 
 LOCATIONS = [
-    ["upstairs-landing", "http://192.168.2.63"],
-    ["downstairs-back-room", "http://192.168.2.64"],
+    # Adjust the names and IP addresses to suit your own set up.
+    ["downstairs-back-room", "http://192.168.2.180"],
+    ["upstairs-landing", "http://192.168.2.181"],
 ]
 # INTERVAL_TIME_S = 5
 INTERVAL_TIME_S = 60 * 5
@@ -35,7 +36,8 @@ class TemperatureReader:
         file_name = self.today.isoformat() + "-" + self.location + ".csv"
         self.csv_file = open(file_name, "a", newline="")
         self.csv_writer = csv.writer(
-            self.csv_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
+            self.csv_file, delimiter=",", quotechar='"',
+            quoting=csv.QUOTE_MINIMAL
         )
         self.csv_writer.writerow(["Time", "Temperature", "Humidity"])
         self.csv_file.flush()
@@ -76,7 +78,7 @@ class TemperatureReader:
             self.extract_readings(page)
             self.write_to_file()
         except requests.exceptions.RequestException as e:
-            print(location, "no response", e)
+            print(self.location, "no response", e)
 
     def change_files(self):
         today = date.today()
