@@ -4,12 +4,9 @@ This documents the progress that I have made and what I plan to do next.  I
 find that this sort of ducment is essential as I only have short periods of
 time to work on this project.
 
-## BUGS
+## BUGS/ TODO
 
-## TODO
-
-* Add name for each sensor that is visible to IP address scanners (like on
-my phone).
+See GitHub project.
 
 ## DONE
 
