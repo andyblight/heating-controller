@@ -119,7 +119,6 @@ void setup(){
   delay(10);
   dht.begin();
 
-  Serial.println("\nStarting WiFi.");
   // Set host name with MAC address
   String mac = WiFi.macAddress();
   String mac_last_3;
@@ -130,6 +129,7 @@ void setup(){
   }
   String host_name = "Sensor" + mac_last_3;
   WiFi.hostname(host_name);
+  Serial.print("\nStarting WiFi.");
   // Set Wi-Fi to act as client only.
   WiFi.mode(WIFI_STA);
   // Connect to Wi-Fi
