@@ -2,7 +2,5 @@
 
 {% block content %}
     <h1>Current values</h1>
-    {% for sensor in sensors %}
-    <div><p>{{ sensor.name }}: temperature: <b>{{ sensor.temperature }}C</b>, humidity: <b>{{ sensor.humidity }}%</b></p></div>
-    {% endfor %}
+    <div><p>{{ table }}</p></div>
 {% endblock %}

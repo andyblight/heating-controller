@@ -13,16 +13,17 @@ python3 -m venv venv
 
 To start the environment: `. venv/bin/activate`
 
-On first time use, run
+To set up the virtual environment for first time use, run
 
 ```bash
 cd server/web-ui/scripts
 ./install_requirements.bash
 ```
 
-to set up the virtual environment.
-
 To exit the venv session: `deactivate`
+
+Note: after adding a new package to the VEnv, deactivate and activate to pick up
+the change.
 
 ### Saving the venv in git
 
