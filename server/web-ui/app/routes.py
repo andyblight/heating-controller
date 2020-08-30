@@ -4,15 +4,21 @@ from app import app
 @app.route('/')
 @app.route('/index')
 def index():
-    user = {'username': 'Andy'}
-    posts = [
+    sensors = [
         {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
+            'name': 'External',
+            'temperature': '30',
+            'humidity': '90'
         },
         {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
+            'name': 'Upstairs',
+            'temperature': '27',
+            'humidity': '70'
+        },
+        {
+            'name': 'Downstairs',
+            'temperature': '20',
+            'humidity': '50'
         }
     ]
-    return render_template('index.html', title='Home', user=user, posts=posts)
+    return render_template('index.html', title='Home', sensors=sensors)
