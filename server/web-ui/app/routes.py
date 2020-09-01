@@ -29,3 +29,10 @@ def index():
         'index.html',
         title='Home',
         table=SensorTable(sensor_values))
+
+
+@app.route('/charts')
+def charts():
+    return render_template(
+        'charts.html',
+        title='Charts')
