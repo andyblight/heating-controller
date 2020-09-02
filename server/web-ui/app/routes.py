@@ -1,6 +1,7 @@
 from flask import render_template
 from flask_table import Table, Col
-from app import app
+from flask_googlecharts import LineChart
+from app import app, charts
 
 
 class SensorTable(Table):
@@ -33,6 +34,14 @@ def index():
 
 @app.route('/charts')
 def charts():
+    my_chart = LineChart("my_chart", options={"title": "MyChart"})
+    my_chart.add_column("string", "Competitor")
+    my_chart.add_column("number", "Hot Dogs")
+    my_chart.add_rows([["Matthew Stonie", 62],
+                       ["Joey Chestnut", 60],
+                       ["Eater X", 35.5],
+                       ["Erik Denmark", 33],
+                       ["Adrian Morgan", 31]])
     return render_template(
         'charts.html',
-        title='Charts')
+        title='Charts', chart_fn=charts, my_chart=my_chart)

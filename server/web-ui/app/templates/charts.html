@@ -1,7 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Charts</h1>
-    <div><p>chart 1</p></div>
-    <div><p>chart 2</p></div>
+    <head>
+        <meta charset="UTF-8">
+        <script src="https://www.gstatic.com/charts/loader.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        {{ charts_init }}
+    </head>
+    <body>
+        <h1>Charts</h1>
+        <h2>Today</h2>
+        <div><p>{{ charts_fn }}</p></div>
+        <h2>Last 7 days</h2>
+        <div><p>{{ my_chart }}</p></div>
+        <h2>Last 30 days</h2>
+        <div><p>{{ charts_fn.my_chart }}</p></div>
+    </body>
 {% endblock %}

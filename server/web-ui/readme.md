@@ -49,4 +49,13 @@ using `flask run`
 
 To stop the app, press Ctrl+C.
 
+## Charts
+
+This appears to be more difficult than I thought.
+
+I tried flask-goolgecharts but ~I could not get it to run.  No decent help
+either.
+
+Trying this:
+<https://developers.google.com/chart/interactive/docs/dev/gviz_api_lib>
 
