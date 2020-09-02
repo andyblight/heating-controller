@@ -11,32 +11,33 @@ class SensorTable(Table):
 
 
 # Sensor values
-class Sensor():
+class Sensor:
     def __init__(self, name, temperature, humidity):
         self.name = name
         self.temperature = temperature
         self.humidity = humidity
 
 
-@app.route('/')
-@app.route('/index')
+@app.route("/")
+@app.route("/index")
 def index():
     sensor_values = [
         Sensor("External", 30, 90),
         Sensor("Upstairs", 27, 80),
         Sensor("Downstairs", 25, 70),
     ]
-    return render_template(
-        'index.html',
-        title='Home',
-        table=SensorTable(sensor_values))
+    return render_template("index.html", title="Home", table=SensorTable(sensor_values))
 
 
-@app.route('/charts')
+@app.route("/charts")
 def charts():
     jscode_today = chart_today()
     jscode_seven = chart_seven_days()
     jscode_thirty = chart_thirty_days()
     return render_template(
-        'charts.html',
-        title='Charts', jscode_chart_today=jscode_today, jscode_chart_seven=jscode_seven, jscode_chart_thirty=jscode_thirty)
+        "charts.html",
+        title="Charts",
+        jscode_chart_today=jscode_today,
+        jscode_chart_seven=jscode_seven,
+        jscode_chart_thirty=jscode_thirty,
+    )
