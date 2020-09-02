@@ -1,4 +1,14 @@
 #!/usr/bin/python3
+# Made by merging
+# https://developers.google.com/chart/interactive/docs/dev/gviz_api_lib
+# with
+# https://developers.google.com/chart/interactive/docs/gallery/linechart
+#
+# To make test this:
+#  . ../server/web-ui/venv/bin/activate
+#  python3 chart_demo.py > ./temp.html
+# firefox ./temp.html
+
 
 import gviz_api
 
@@ -18,27 +28,7 @@ page_template = """
     google.charts.load('current', {'packages':['line']});
     google.charts.setOnLoadCallback(drawChart);
     function drawChart() {
-      var data = new google.visualization.DataTable();
-      data.addColumn('number', 'Day');
-      data.addColumn('number', 'Guardians of the Galaxy');
-      data.addColumn('number', 'The Avengers');
-      data.addColumn('number', 'Transformers: Age of Extinction');
-      data.addRows([
-        [1,  37.8, 80.8, 41.8],
-        [2,  30.9, 69.5, 32.4],
-        [3,  25.4,   57, 25.7],
-        [4,  11.7, 18.8, 10.5],
-        [5,  11.9, 17.6, 10.4],
-        [6,   8.8, 13.6,  7.7],
-        [7,   7.6, 12.3,  9.6],
-        [8,  12.3, 29.2, 10.6],
-        [9,  16.9, 42.9, 14.8],
-        [10, 12.8, 30.9, 11.6],
-        [11,  5.3,  7.9,  4.7],
-        [12,  6.6,  8.4,  5.2],
-        [13,  4.8,  6.3,  3.6],
-        [14,  4.2,  6.2,  3.4]
-      ]);
+      %(jscode_chart)s
       var options = {
         chart: {
           title: 'Box Office Earnings in First Two Weeks of Opening',
@@ -48,7 +38,7 @@ page_template = """
         height: 500
       };
       var chart = new google.charts.Line(document.getElementById('linechart_material'));
-      chart.draw(data, google.charts.Line.convertOptions(options));
+      chart.draw(jscode_chart_data, google.charts.Line.convertOptions(options));
     }
   </script>
   <body>
@@ -61,7 +51,7 @@ page_template = """
 """
 
 
-def main():
+def create_table():
     # Creating the data
     description = {"name": ("string", "Name"),
                    "salary": ("number", "Salary"),
@@ -79,10 +69,48 @@ def main():
     jscode = data_table.ToJSCode("jscode_data",
                                  columns_order=("name", "salary", "full_time"),
                                  order_by="salary")
-    # Create a JSON string.
-    json = data_table.ToJSon(columns_order=("name", "salary", "full_time"),
-                             order_by="salary")
+    return jscode
 
+
+def create_chart():
+    description = {"day": ("number", "Day"),
+                   "guardians": ("number", "Guardians of the Galaxy"),
+                   "avengers": ("number", "The Avengers"),
+                   "transformers": ("number", "Transformers: Age of Extinction")}
+    # [1,  37.8, 80.8, 41.8],
+    # [2,  30.9, 69.5, 32.4],
+    # [3,  25.4,   57, 25.7],
+    # [4,  11.7, 18.8, 10.5],
+    # [5,  11.9, 17.6, 10.4],
+    # [6,   8.8, 13.6,  7.7],
+    # [7,   7.6, 12.3,  9.6],
+    # [8,  12.3, 29.2, 10.6],
+    # [9,  16.9, 42.9, 14.8],
+    # [10, 12.8, 30.9, 11.6],
+    # [11,  5.3,  7.9,  4.7],
+    # [12,  6.6,  8.4,  5.2],
+    # [13,  4.8,  6.3,  3.6],
+    # [14,  4.2,  6.2,  3.4]
+    data = [
+        {"day":  1, "guardians": 37.8, "avengers": 80.8, "transformers": 41.8},
+        {"day":  2, "guardians": 30.9, "avengers": 69.5, "transformers": 32.4},
+        {"day":  3, "guardians": 25.4, "avengers": 57.0, "transformers": 25.7},
+        {"day":  4, "guardians": 11.7, "avengers": 18.8, "transformers": 10.5},
+    ]
+    chart_data_table = gviz_api.DataTable(description)
+    chart_data_table.LoadData(data)
+    # Create a JavaScript code string.
+    jscode = chart_data_table.ToJSCode("jscode_chart_data",
+                                       columns_order=("day",
+                                                      "guardians",
+                                                      "avengers",
+                                                      "transformers"))
+    return jscode
+
+
+def main():
+    jscode = create_table()
+    jscode_chart = create_chart()
     # Put the JS code and JSON string into the template.
     print("Content-type: text/html")
     print()

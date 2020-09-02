@@ -28,30 +28,33 @@ jscode_data.setCell(3, 2, true);
       var jscode_table = new google.visualization.Table(document.getElementById('table_div_jscode'));
       jscode_table.draw(jscode_data, {showRowNumber: true});
     }
+
     google.charts.load('current', {'packages':['line']});
     google.charts.setOnLoadCallback(drawChart);
     function drawChart() {
-      var data = new google.visualization.DataTable();
-      data.addColumn('number', 'Day');
-      data.addColumn('number', 'Guardians of the Galaxy');
-      data.addColumn('number', 'The Avengers');
-      data.addColumn('number', 'Transformers: Age of Extinction');
-      data.addRows([
-        [1,  37.8, 80.8, 41.8],
-        [2,  30.9, 69.5, 32.4],
-        [3,  25.4,   57, 25.7],
-        [4,  11.7, 18.8, 10.5],
-        [5,  11.9, 17.6, 10.4],
-        [6,   8.8, 13.6,  7.7],
-        [7,   7.6, 12.3,  9.6],
-        [8,  12.3, 29.2, 10.6],
-        [9,  16.9, 42.9, 14.8],
-        [10, 12.8, 30.9, 11.6],
-        [11,  5.3,  7.9,  4.7],
-        [12,  6.6,  8.4,  5.2],
-        [13,  4.8,  6.3,  3.6],
-        [14,  4.2,  6.2,  3.4]
-      ]);
+      var jscode_chart_data = new google.visualization.DataTable();
+jscode_chart_data.addColumn("number", "Day", "day");
+jscode_chart_data.addColumn("number", "Guardians of the Galaxy", "guardians");
+jscode_chart_data.addColumn("number", "The Avengers", "avengers");
+jscode_chart_data.addColumn("number", "Transformers: Age of Extinction", "transformers");
+jscode_chart_data.addRows(4);
+jscode_chart_data.setCell(0, 0, 1);
+jscode_chart_data.setCell(0, 1, 37.8);
+jscode_chart_data.setCell(0, 2, 80.8);
+jscode_chart_data.setCell(0, 3, 41.8);
+jscode_chart_data.setCell(1, 0, 2);
+jscode_chart_data.setCell(1, 1, 30.9);
+jscode_chart_data.setCell(1, 2, 69.5);
+jscode_chart_data.setCell(1, 3, 32.4);
+jscode_chart_data.setCell(2, 0, 3);
+jscode_chart_data.setCell(2, 1, 25.4);
+jscode_chart_data.setCell(2, 2, 57.0);
+jscode_chart_data.setCell(2, 3, 25.7);
+jscode_chart_data.setCell(3, 0, 4);
+jscode_chart_data.setCell(3, 1, 11.7);
+jscode_chart_data.setCell(3, 2, 18.8);
+jscode_chart_data.setCell(3, 3, 10.5);
+
       var options = {
         chart: {
           title: 'Box Office Earnings in First Two Weeks of Opening',
@@ -61,7 +64,7 @@ jscode_data.setCell(3, 2, true);
         height: 500
       };
       var chart = new google.charts.Line(document.getElementById('linechart_material'));
-      chart.draw(data, google.charts.Line.convertOptions(options));
+      chart.draw(jscode_chart_data, google.charts.Line.convertOptions(options));
     }
   </script>
   <body>
