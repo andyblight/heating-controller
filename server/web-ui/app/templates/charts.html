@@ -2,18 +2,33 @@
 
 {% block content %}
     <head>
-        <meta charset="UTF-8">
         <script src="https://www.gstatic.com/charts/loader.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        {{ charts_init }}
+        <script>
+            google.charts.load('current', {'packages':['line']});
+            google.charts.setOnLoadCallback(drawChart);
+            function drawChart() {
+                {{jscode_chart_data|safe}}
+                var options = {
+                    chart: {
+                    title: "Box Office Earnings in First Two Weeks of Opening",
+                    subtitle: "in millions of dollars (USD)"
+                    },
+                    width: 900,
+                    height: 500
+                };
+                var chart = new google.charts.Line(document.getElementById("linechart_material"));
+                chart.draw(jscode_chart_data, google.charts.Line.convertOptions(options));
+            }
+        </script>
     </head>
     <body>
         <h1>Charts</h1>
         <h2>Today</h2>
-        <div><p>{{ charts_fn }}</p></div>
+        <div id="linechart_material"></div>
         <h2>Last 7 days</h2>
-        <div><p>{{ my_chart }}</p></div>
+        <div><p>TODO</p></div>
         <h2>Last 30 days</h2>
-        <div><p>{{ charts_fn.my_chart }}</p></div>
+        <div><p>TODO</p></div>
     </body>
+
 {% endblock %}

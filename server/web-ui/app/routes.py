@@ -1,7 +1,7 @@
 from flask import render_template
 from flask_table import Table, Col
-from flask_googlecharts import LineChart
-from app import app, charts
+import gviz_api
+from app import app
 
 
 class SensorTable(Table):
@@ -34,14 +34,24 @@ def index():
 
 @app.route('/charts')
 def charts():
-    my_chart = LineChart("my_chart", options={"title": "MyChart"})
-    my_chart.add_column("string", "Competitor")
-    my_chart.add_column("number", "Hot Dogs")
-    my_chart.add_rows([["Matthew Stonie", 62],
-                       ["Joey Chestnut", 60],
-                       ["Eater X", 35.5],
-                       ["Erik Denmark", 33],
-                       ["Adrian Morgan", 31]])
+    description = {'day': ('number', 'Day'),
+                   'guardians': ('number', 'Guardians of the Galaxy'),
+                   'avengers': ('number', 'The Avengers'),
+                   'transformers': ('number', 'Transformers: Age of Extinction')}
+    data = [
+        {'day':  1, 'guardians': 37.8, 'avengers': 80.8, 'transformers': 41.8},
+        {'day':  2, 'guardians': 30.9, 'avengers': 69.5, 'transformers': 32.4},
+        {'day':  3, 'guardians': 25.4, 'avengers': 57.0, 'transformers': 25.7},
+        {'day':  4, 'guardians': 11.7, 'avengers': 18.8, 'transformers': 10.5},
+    ]
+    chart_data = gviz_api.DataTable(description)
+    chart_data.LoadData(data)
+    # Create a JavaScript code string.
+    jscode = chart_data.ToJSCode('jscode_chart_data',
+                                 columns_order=('day',
+                                                'guardians',
+                                                 'avengers',
+                                                 'transformers'))
     return render_template(
         'charts.html',
-        title='Charts', chart_fn=charts, my_chart=my_chart)
+        title='Charts', jscode_chart_data=jscode)
