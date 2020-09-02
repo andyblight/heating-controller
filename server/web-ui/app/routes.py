@@ -1,6 +1,7 @@
 from flask import render_template
 from flask_table import Table, Col
-from app import app, chart_today, chart_seven_days, chart_thirty_days
+from app import app
+from app.charts import chart_today, chart_seven_days, chart_thirty_days
 
 
 class SensorTable(Table):
