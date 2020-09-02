@@ -47,11 +47,11 @@ def charts():
     chart_data = gviz_api.DataTable(description)
     chart_data.LoadData(data)
     # Create a JavaScript code string.
-    jscode = chart_data.ToJSCode('jscode_chart_data',
+    jscode = chart_data.ToJSCode('jscode_chart_today',
                                  columns_order=('day',
                                                 'guardians',
                                                  'avengers',
                                                  'transformers'))
     return render_template(
         'charts.html',
-        title='Charts', jscode_chart_data=jscode)
+        title='Charts', jscode_chart_today=jscode)

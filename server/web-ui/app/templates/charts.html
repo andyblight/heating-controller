@@ -5,30 +5,55 @@
         <script src="https://www.gstatic.com/charts/loader.js"></script>
         <script>
             google.charts.load('current', {'packages':['line']});
-            google.charts.setOnLoadCallback(drawChart);
-            function drawChart() {
-                {{jscode_chart_data|safe}}
+            google.charts.setOnLoadCallback(drawChartToday);
+            google.charts.setOnLoadCallback(drawChartSeven);
+            google.charts.setOnLoadCallback(drawChartThirty);
+            function drawChartToday() {
+                {{jscode_chart_today|safe}}
                 var options = {
                     chart: {
-                    title: "Box Office Earnings in First Two Weeks of Opening",
-                    subtitle: "in millions of dollars (USD)"
+                    title: "Temperatures"
                     },
                     width: 900,
                     height: 500
                 };
-                var chart = new google.charts.Line(document.getElementById("linechart_material"));
-                chart.draw(jscode_chart_data, google.charts.Line.convertOptions(options));
+                var chart = new google.charts.Line(document.getElementById("linechart_today"));
+                chart.draw(jscode_chart_today, google.charts.Line.convertOptions(options));
+            }
+            function drawChartSeven() {
+                {{jscode_chart_today|safe}}
+                var options = {
+                    chart: {
+                    title: "Temperatures"
+                    },
+                    width: 900,
+                    height: 500
+                };
+                var chart = new google.charts.Line(document.getElementById("linechart_seven"));
+                chart.draw(jscode_chart_today, google.charts.Line.convertOptions(options));
+            }
+            function drawChartThirty() {
+                {{jscode_chart_today|safe}}
+                var options = {
+                    chart: {
+                    title: "Temperatures"
+                    },
+                    width: 900,
+                    height: 500
+                };
+                var chart = new google.charts.Line(document.getElementById("linechart_thirty"));
+                chart.draw(jscode_chart_today, google.charts.Line.convertOptions(options));
             }
         </script>
     </head>
     <body>
         <h1>Charts</h1>
         <h2>Today</h2>
-        <div id="linechart_material"></div>
+        <div id="linechart_today"></div>
         <h2>Last 7 days</h2>
-        <div><p>TODO</p></div>
+        <div id="linechart_seven"></div>
         <h2>Last 30 days</h2>
-        <div><p>TODO</p></div>
+        <div id="linechart_thirty"></div>
     </body>
 
 {% endblock %}
