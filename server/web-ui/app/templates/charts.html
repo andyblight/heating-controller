@@ -12,7 +12,7 @@
                 {{jscode_chart_today|safe}}
                 var options = {
                     chart: {
-                    title: "Temperatures"
+                    title: "Today"
                     },
                     width: 900,
                     height: 500
@@ -21,38 +21,37 @@
                 chart.draw(jscode_chart_today, google.charts.Line.convertOptions(options));
             }
             function drawChartSeven() {
-                {{jscode_chart_today|safe}}
+                {{jscode_chart_seven|safe}}
                 var options = {
                     chart: {
-                    title: "Temperatures"
+                    title: "7 days"
                     },
                     width: 900,
                     height: 500
                 };
                 var chart = new google.charts.Line(document.getElementById("linechart_seven"));
-                chart.draw(jscode_chart_today, google.charts.Line.convertOptions(options));
+                chart.draw(jscode_chart_seven, google.charts.Line.convertOptions(options));
             }
             function drawChartThirty() {
-                {{jscode_chart_today|safe}}
+                {{jscode_chart_thirty|safe}}
                 var options = {
                     chart: {
-                    title: "Temperatures"
+                    title: "30 days"
                     },
                     width: 900,
                     height: 500
                 };
                 var chart = new google.charts.Line(document.getElementById("linechart_thirty"));
-                chart.draw(jscode_chart_today, google.charts.Line.convertOptions(options));
+                chart.draw(jscode_chart_thirty, google.charts.Line.convertOptions(options));
             }
         </script>
     </head>
     <body>
         <h1>Charts</h1>
-        <h2>Today</h2>
         <div id="linechart_today"></div>
-        <h2>Last 7 days</h2>
+        <h1>Charts</h1>
         <div id="linechart_seven"></div>
-        <h2>Last 30 days</h2>
+        <h1>Charts</h1>
         <div id="linechart_thirty"></div>
     </body>
 
