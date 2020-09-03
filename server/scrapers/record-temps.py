@@ -9,6 +9,8 @@ import time
 # pip3 imports
 from bs4 import BeautifulSoup
 
+DATA_DIRECTORY = "../data"
+
 LOCATIONS = [
     # Adjust the names and IP addresses to suit your own set up.
     ["downstairs-back-room", "http://192.168.2.180"],
@@ -33,7 +35,7 @@ class TemperatureReader:
 
     def open_file(self):
         self.today = date.today()
-        file_name = self.today.isoformat() + "-" + self.location + ".csv"
+        file_name = DATA_DIRECTORY + "/" + self.today.isoformat() + "-" + self.location + ".csv"
         self.csv_file = open(file_name, "a", newline="")
         self.csv_writer = csv.writer(
             self.csv_file, delimiter=",", quotechar='"',
