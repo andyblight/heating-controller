@@ -3,9 +3,8 @@ import gviz_api
 
 
 def chart_today():
-    # Work out today's date.
-    # Read today's CSV files.
-    # Merge data
+    # TODO Get data from somewhere.
+    # Convert into
     description = {
         "time_of_day": ("timeofday", "Time"),
         "external": ("number", "External"),
