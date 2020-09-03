@@ -29,10 +29,11 @@ def load_file(file_name):
             # Exclude header rows (there can be more than one).
             # First entry of header row is always "Time".
             if row[0] != "Time":
-                # Only extract time and temperature for now.
+                # Extract time, temperature and humidity.
                 entry = []
                 entry.append(row[0])
                 entry.append(row[1])
+                entry.append(row[2])
                 contents.append(entry)
     return (header, contents)
 
