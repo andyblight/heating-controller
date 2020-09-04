@@ -191,3 +191,54 @@ class TestLoadResults(unittest.TestCase):
         self.assertEqual(entry_time, datetime.time(10, 10), "Incorrect time")
         self.assertEqual(entry_temperature, 21.8, "Incorrect temperature")
         self.assertEqual(entry_humidity, 69.3, "Incorrect humidity")
+
+
+class TestMergeResults(unittest.TestCase):
+    def setUp(self):
+        self.path = os.path.dirname(os.path.abspath(__file__))
+        self.data_path = self.path + "/data"
+
+    def test_merge_one_day_full(self):
+        date_from = datetime.date(2020, 8, 11)
+        date_to = datetime.date(2020, 8, 11)
+        raw_results = load_results(self.data_path, date_from, date_to)
+        # Merge results using default.
+        (description, data) = merge_results(raw_results)
+        # Output format has to be.
+        # description = {
+        #     "time_of_day": ("timeofday", "Time"),
+        #     "external": ("number", "External"),
+        #     "sensor1": ("number", "Upstairs"),
+        #     "sensor2": ("number", "Downstairs"),
+        # }
+        # data = [
+        #     {
+        #         "time_of_day": datetime.time(hour=10, minute=30),
+        #         "external": 25.4,
+        #         "sensor1": 57.0,
+        #         "sensor2": 25.7,
+        #     },
+        #     {
+        #         "time_of_day": datetime.time(hour=11, minute=30),
+        #         "external": 11.7,
+        #         "sensor1": 18.8,
+        #         "sensor2": 10.5,
+        #     },
+        # ]
+        self.assertEqual(len(description), 4,
+                         "Incorrect number of entries in description")
+
+    # def test_merge_seven_days(self):
+    #     date_from = datetime.date(2020, 8, 11)
+    #     date_to = datetime.date(2020, 8, 17)
+    #     raw_results = load_results(self.data_path, date_from, date_to)
+    #     # Merge results using default.
+    #     results = merge_results(raw_results)
+
+    # def test_merge_one_day_part(self):
+    #     date_from = datetime.date(2020, 9, 3)
+    #     date_to = datetime.date(2020, 9, 3)
+    #     raw_results = load_results(self.data_path, date_from, date_to)
+    #     # Merge results using default.
+    #     results = merge_results(raw_results)
+

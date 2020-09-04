@@ -3,11 +3,21 @@
 import csv
 import datetime
 
+import os,sys,pathlib
+current_dir = os.path.dirname(os.path.abspath(__file__))
+path = pathlib.Path(current_dir)
+parent_dir = path.parent.parent
+# print(parent_dir)
+locations_dir = os.path.join(parent_dir, "locations")
+# print(locations_dir)
+sys.path.insert(0, locations_dir)
+# print(sys.path)
+import locations
+
 # TODO Can these be shared with the scrapers? SSOT
 DATA_DIRECTORY = "../data"
+#
 LOCATIONS = [
-    # The CSV files all have the same format:
-    # <ISO date>-<location>.csv
     ["external"],
     ["downstairs-back-room"],
     ["upstairs-landing"],
@@ -84,21 +94,25 @@ def load_results(path, date_from, date_to):
     return raw_contents
 
 
-def merge_results(raw_contents, interval_minutes):
-    description = {"time_of_day": ("timeofday", "Time")}
+def __build_description():
+    """ Use locations package to build up the description. """
+    description = {"date_time": ("date", "Time")}
+    for location in LOCATIONS:
+        description[location.name] = ("number", location.label)
+    print(description)
+    return description
+
+
+def merge_results(raw_results, interval_minutes=5):
+    description = __build_description()
     data = []
-    for location_contents in raw_contents:
-        # location_contents contains (location, (header, data)).
-        # Add each sensor entry.
-        location = location_contents[0]
-        description[location] = ("number", location.title())
-        # Copy time and temperature data. Entries are roughly aligned using the
-        # time values in each row of data.
-        # Assume that entries are always data[0] = time, data[1] = temperature.
-        # Could parse header but too lazy!
-        raw_data = location_contents[1][1]
-        for row in raw_data:
-            pass
+    for day_results in raw_results:
+        location_results = day_results[1]
+        # for sensor in
+        # for location_data in location_results:
+        #     location = location_data[0]
+        #     # Add each sensor entry label to description
+        #     description[location] = ("number", location.title())
     return (description, data)
 
     # Output format has to be.

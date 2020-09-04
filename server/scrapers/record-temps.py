@@ -11,11 +11,6 @@ from bs4 import BeautifulSoup
 
 DATA_DIRECTORY = "../data"
 
-LOCATIONS = [
-    # Adjust the names and IP addresses to suit your own set up.
-    ["downstairs-back-room", "http://192.168.2.180"],
-    ["upstairs-landing", "http://192.168.2.181"],
-]
 # INTERVAL_TIME_S = 5
 INTERVAL_TIME_S = 60 * 5
 
