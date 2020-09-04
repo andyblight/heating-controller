@@ -15,6 +15,15 @@ LOCATIONS = [
 
 
 def load_file(file_name):
+    """ Loads a single file of results.
+    Returns a structure containing:
+    (header, contents)
+    header = [header_column, ...]
+    header_column = string: the value read from the column of the first row of
+                    the file.
+    contents = [entry, ...]
+    entry = [datetime: time, float: temperature, float: humidity]
+    """
     header = []
     contents = []
     with open(file_name, newline="") as csv_file:
@@ -31,11 +40,48 @@ def load_file(file_name):
             if row[0] != "Time":
                 # Extract time, temperature and humidity.
                 entry = []
-                entry.append(row[0])
-                entry.append(row[1])
-                entry.append(row[2])
+                time = datetime.datetime.strptime(row[0], "%H:%M").time()
+                entry.append(time)
+                entry.append(round(float(row[1]), 1))
+                entry.append(round(float(row[2]), 1))
                 contents.append(entry)
     return (header, contents)
+
+
+def __load_day_results(path, file_date):
+    # The CSV files all have the same format:
+    # <ISO date>-<location>.csv
+    day_contents = []
+    file_date_iso = file_date.isoformat()
+    for location in LOCATIONS:
+        location_string = location[0]
+        file_name = path + "/"
+        file_name += file_date_iso + "-"
+        file_name += location_string + ".csv"
+        # print("Loading file:", file_name)
+        contents = load_file(file_name)
+        day_contents.append((location_string, contents))
+    return day_contents
+
+
+def load_results(path, date_from, date_to):
+    """ Loads results for the given range of dates.
+    Returns a structure containing:
+    (result_date, day_contents)
+    result_date = datetime.
+    day_contents = (location, contents)
+    location = string representing the location of the results.
+    contents = the value returned by load_file().
+    """
+    # print(date_from, date_to)
+    raw_contents = []
+    step = datetime.timedelta(days=1)
+    while date_from <= date_to:
+        # print(date_from.strftime('%Y_%m_%d'))
+        day_contents = __load_day_results(path, date_from)
+        raw_contents.append((date_from, day_contents))
+        date_from += step
+    return raw_contents
 
 
 def merge_results(raw_contents, interval_minutes):
