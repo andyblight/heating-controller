@@ -20,7 +20,7 @@ def load_file(file_name):
     with open(file_name, newline="") as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=",", quotechar='"')
         for row in csv_reader:
-            print(row)
+            # print(row)
             # Add first row as header.
             # Row format: Time,Temperature C,Humidity %
             if header == []:

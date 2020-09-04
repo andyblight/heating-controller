@@ -53,9 +53,15 @@ To stop the app, press Ctrl+C.
 
 This appears to be more difficult than I thought.
 
-I tried flask-goolgecharts but ~I could not get it to run.  No decent help
+I tried flask-goolgecharts but I could not get it to run.  No decent help
 either.
 
 Trying this:
 <https://developers.google.com/chart/interactive/docs/dev/gviz_api_lib>
 
+Finally got something working.
+
+Split out chart preparation from routes.py into charts.py.
+Split out reading and processing of CSV files into prepare_data.py and added
+unit tests as too difficult to debug when using flask.
+HERE!!! Working on merging data.
