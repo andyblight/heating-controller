@@ -3,7 +3,8 @@
 import csv
 import datetime
 
-import os,sys,pathlib
+import os, sys, pathlib
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 path = pathlib.Path(current_dir)
 parent_dir = path.parent.parent
@@ -22,11 +23,13 @@ DATA_DIRECTORY = "../data"
 class SensorHeader:
     def __init__(self):
         # Hardcoded for now.
-        self.columns = ["Time","Temperature","Humidity"]
+        self.columns = ["Time", "Temperature", "Humidity"]
 
 
 class SensorEntry:
-    def __init__(self, date_time: datetime.datetime, temperature :float, humidity :float):
+    def __init__(
+        self, date_time: datetime.datetime, temperature: float, humidity: float
+    ):
         self.date_time = date_time
         self.temperature = temperature
         self.humidity = humidity
@@ -73,14 +76,17 @@ def load_day_results(path, location, file_date):
                 time = datetime.datetime.strptime(row[0], "%H:%M").time()
                 # Use file_date to make time into datetime.
                 date_time = datetime.datetime.combine(file_date, time)
-                temperature_rounded = (round(float(row[1]), 1))
-                humidity_rounded = (round(float(row[2]), 1))
+                temperature_rounded = round(float(row[1]), 1)
+                humidity_rounded = round(float(row[2]), 1)
                 entry = SensorEntry(date_time, temperature_rounded, humidity_rounded)
                 sensor_results.append(entry)
     return sensor_results
 
 
 def load_results_for_location(path, location, date_from, date_to):
+    """ Returns a SensorResults object containing the data for the given range
+    of dates.
+    """
     # print(date_from, date_to)
     location_results = SensorResults(location)
     step = datetime.timedelta(days=1)
@@ -98,8 +104,7 @@ def load_results(path, date_from, date_to):
     """
     combined_results = []
     for location in LOCATIONS:
-        day_results = load_results_for_location(path, location,
-                                                date_from, date_to)
+        day_results = load_results_for_location(path, location, date_from, date_to)
         combined_results.append(day_results)
     return combined_results
 

@@ -47,7 +47,7 @@ class TestLoadDayResults(unittest.TestCase):
         # Verify number of rows.
         self.assertEqual(len(day_results.entries), 3, "Should be 3 rows")
         # Verify row 1 contains 08:18,21.3,73.9.
-        entry = day_results.entries[0]
+        entry = day_results.entries[1]
         time = datetime.time(8, 18)
         expected_datetime = datetime.datetime.combine(file_date, time)
         self.assertEqual(entry.date_time, expected_datetime, "Date time wrong")
@@ -94,109 +94,47 @@ class TestLoadDayResults(unittest.TestCase):
         self.assertEqual(len(day_results.entries), 0, "Should be 0 rows")
 
 
-class TestLoadResults(unittest.TestCase):
+class TestLoadResultsForLocation(unittest.TestCase):
     def setUp(self):
         self.path = os.path.dirname(os.path.abspath(__file__))
         self.data_path = self.path + "/data"
+        self.location = "external"
 
     def test_load_single_day(self):
         date_from = datetime.date(2020, 8, 11)
         date_to = datetime.date(2020, 8, 11)
-        raw_contents = load_results(self.data_path, date_from, date_to)
-        # print(raw_contents)
-        # Verify that single day from three locations has been loaded.
-        self.assertEqual(len(raw_contents), 1, "Incorrect number of days")
-        day_results = raw_contents[0]
-        results_date = day_results[0]
-        self.assertEqual(results_date, date_from, "Incorrect date")
-        # Verify number of locations.
-        location_results = day_results[1]
-        self.assertEqual(len(location_results), 3, "Incorrect number of locations")
-        # Use location 0 (external)
-        location_data = location_results[0]
-        location = location_data[0]
-        self.assertEqual(location, "external", "Incorrect location")
-        contents = location_data[1]
-        # Check header contents.
-        header = contents[0]
-        self.assertEqual(header[1], "Temperature C", "Incorrect header")
-        # Check number of entries.
-        entries = contents[1]
-        self.assertEqual(len(entries), 288, "Incorrect number of entries")
-        # Check the values in entry
-        entry = entries[122]
-        entry_time = entry[0]
-        entry_temperature = entry[1]
-        entry_humidity = entry[2]
-        self.assertEqual(entry_time, datetime.time(10, 13), "Incorrect time")
-        self.assertEqual(entry_temperature, 21.2, "Incorrect temperature")
-        self.assertEqual(entry_humidity, 76.0, "Incorrect humidity")
+        location_results = pd.load_results_for_location(
+            self.data_path, self.location, date_from, date_to
+        )
+        # print(location_results)
+        # Verify that single day from given location has been loaded.
+        self.assertEqual(
+            len(location_results.entries), 288, "Incorrect number of entries"
+        )
 
     def test_load_two_days(self):
         date_from = datetime.date(2020, 8, 11)
         date_to = datetime.date(2020, 8, 12)
-        raw_contents = load_results(self.data_path, date_from, date_to)
-        # Verify that two days from three locations has been loaded.
-        self.assertEqual(len(raw_contents), 2, "Incorrect number of days")
-        # Use day 2
-        day_results = raw_contents[1]
-        results_date = day_results[0]
-        self.assertEqual(results_date, date_to, "Incorrect date")
-        # Verify number of locations.
-        location_results = day_results[1]
-        self.assertEqual(len(location_results), 3, "Incorrect number of locations")
-        # Use location 1 (downstairs-back-room)
-        location_data = location_results[1]
-        location = location_data[0]
-        self.assertEqual(location, "downstairs-back-room", "Incorrect location")
-        contents = location_data[1]
-        # Check header contents.
-        header = contents[0]
-        self.assertEqual(header[1], "Temperature", "Incorrect header")
-        # Check number of entries.
-        entries = contents[1]
-        self.assertEqual(len(entries), 288, "Incorrect number of entries")
-        # Check the values in entry
-        entry = entries[122]
-        entry_time = entry[0]
-        entry_temperature = entry[1]
-        entry_humidity = entry[2]
-        self.assertEqual(entry_time, datetime.time(10, 13), "Incorrect time")
-        self.assertEqual(entry_temperature, 24.2, "Incorrect temperature")
-        self.assertEqual(entry_humidity, 72.8, "Incorrect humidity")
+        location_results = pd.load_results_for_location(
+            self.data_path, self.location, date_from, date_to
+        )
+        # print(location_results)
+        # Verify that single day from given location has been loaded.
+        self.assertEqual(
+            len(location_results.entries), 576, "Incorrect number of entries"
+        )
 
     def test_load_seven_days(self):
         date_from = datetime.date(2020, 8, 11)
         date_to = datetime.date(2020, 8, 17)
-        raw_contents = load_results(self.data_path, date_from, date_to)
-        # Verify that seven days from three locations has been loaded.
-        self.assertEqual(len(raw_contents), 7, "Incorrect number of days")
-        # Use day 7
-        day_results = raw_contents[6]
-        results_date = day_results[0]
-        self.assertEqual(results_date, date_to, "Incorrect date")
-        # Verify number of locations.
-        location_results = day_results[1]
-        self.assertEqual(len(location_results), 3, "Incorrect number of locations")
-        # Use location 3 (upstairs-landing)
-        location_data = location_results[2]
-        location = location_data[0]
-        self.assertEqual(location, "upstairs-landing", "Incorrect location")
-        contents = location_data[1]
-        # Check header contents.
-        header = contents[0]
-        self.assertEqual(header[1], "Temperature", "Incorrect header")
-        # Check number of entries.
-        entries = contents[1]
-        self.assertEqual(len(entries), 288, "Incorrect number of entries")
-        # Check the values in entry
-        entry = entries[122]
-        entry_time = entry[0]
-        entry_temperature = entry[1]
-        entry_humidity = entry[2]
-        self.assertEqual(entry_time, datetime.time(10, 10), "Incorrect time")
-        self.assertEqual(entry_temperature, 21.8, "Incorrect temperature")
-        self.assertEqual(entry_humidity, 69.3, "Incorrect humidity")
+        location_results = pd.load_results_for_location(
+            self.data_path, self.location, date_from, date_to
+        )
+        # print(location_results)
+        # Verify that single day from given location has been loaded.
+        self.assertEqual(
+            len(location_results.entries), 2014, "Incorrect number of entries"
+        )
 
 
 class TestMergeResults(unittest.TestCase):
@@ -231,8 +169,9 @@ class TestMergeResults(unittest.TestCase):
         #         "sensor2": 10.5,
         #     },
         # ]
-        self.assertEqual(len(description), 4,
-                         "Incorrect number of entries in description")
+        self.assertEqual(
+            len(description), 4, "Incorrect number of entries in description"
+        )
 
     # def test_merge_seven_days(self):
     #     date_from = datetime.date(2020, 8, 11)
@@ -247,4 +186,3 @@ class TestMergeResults(unittest.TestCase):
     #     raw_results = load_results(self.data_path, date_from, date_to)
     #     # Merge results using default.
     #     results = merge_results(raw_results)
-
