@@ -5,12 +5,11 @@ import unittest
 import app.prepare_data as pd
 from locations import Location, LOCATIONS
 
+# Set up path to test data once.
+data_path = os.path.dirname(os.path.abspath(__file__)) + "/data"
+
 
 class TestLoadDayResults(unittest.TestCase):
-    def setUp(self):
-        self.path = os.path.dirname(os.path.abspath(__file__))
-        self.data_path = self.path + "/data"
-
     def test_file_1(self):
         # The data in this file are:
         # Time,Temperature,Humidity
@@ -24,7 +23,7 @@ class TestLoadDayResults(unittest.TestCase):
         location = Location("", "downstairs-back-room", "", "")
         file_date = datetime.date(2020, 9, 3)
         # print(file_name)
-        day_results = pd.load_day_results(self.data_path, location, file_date)
+        day_results = pd.load_day_results(data_path, location, file_date)
         # Verify location.
         self.assertEqual(day_results.location, location, "Location wrong")
         # Verify SensorHeader contents.
@@ -59,7 +58,7 @@ class TestLoadDayResults(unittest.TestCase):
         location = Location("", "upstairs-landing", "", "")
         file_date = datetime.date(2020, 9, 3)
         # print(file_name)
-        day_results = pd.load_day_results(self.data_path, location, file_date)
+        day_results = pd.load_day_results(data_path, location, file_date)
         # Verify readings.
         # print("ENTRIES", day_results.entries)
         # Verify no header rows are in contents.
@@ -83,22 +82,20 @@ class TestLoadDayResults(unittest.TestCase):
         location = Location("", "external", "", "")
         file_date = datetime.date(2020, 9, 3)
         # print(file_name)
-        day_results = pd.load_day_results(self.data_path, location, file_date)
+        day_results = pd.load_day_results(data_path, location, file_date)
         # Verify entries are empty.
         self.assertEqual(len(day_results.entries), 0, "Should be 0 rows")
 
 
 class TestLoadResultsForLocation(unittest.TestCase):
     def setUp(self):
-        self.path = os.path.dirname(os.path.abspath(__file__))
-        self.data_path = self.path + "/data"
         self.location = Location("", "external", "", "")
 
     def test_load_single_day(self):
         date_from = datetime.date(2020, 8, 11)
         date_to = datetime.date(2020, 8, 11)
         location_results = pd.load_results_for_location(
-            self.data_path, self.location, date_from, date_to
+            data_path, self.location, date_from, date_to
         )
         # print(location_results)
         # Verify that single day from given location has been loaded.
@@ -110,7 +107,7 @@ class TestLoadResultsForLocation(unittest.TestCase):
         date_from = datetime.date(2020, 8, 11)
         date_to = datetime.date(2020, 8, 12)
         location_results = pd.load_results_for_location(
-            self.data_path, self.location, date_from, date_to
+            data_path, self.location, date_from, date_to
         )
         # print(location_results)
         # Verify that single day from given location has been loaded.
@@ -122,7 +119,7 @@ class TestLoadResultsForLocation(unittest.TestCase):
         date_from = datetime.date(2020, 8, 11)
         date_to = datetime.date(2020, 8, 17)
         location_results = pd.load_results_for_location(
-            self.data_path, self.location, date_from, date_to
+            data_path, self.location, date_from, date_to
         )
         # print(location_results)
         # Verify that single day from given location has been loaded.
@@ -137,16 +134,12 @@ class TestLoadResults(unittest.TestCase):
     Only need to test that all locations are loaded.
     Date range and contents of the entries have been tested elsewhere.
     """
-    def setUp(self):
-        self.path = os.path.dirname(os.path.abspath(__file__))
-        self.data_path = self.path + "/data"
-
     def test_load_results(self):
         # Use a range of dates for fun!
         date_from = datetime.date(2020, 8, 11)
         date_to = datetime.date(2020, 8, 14)
         location_results_list = pd.load_results(
-            self.data_path, date_from, date_to
+            data_path, date_from, date_to
         )
         # print(location_results_list)
         # Check that there are the correct number of locations.
@@ -164,15 +157,11 @@ class TestLoadResults(unittest.TestCase):
 
 
 class TestMergeResults(unittest.TestCase):
-    def setUp(self):
-        self.path = os.path.dirname(os.path.abspath(__file__))
-        self.data_path = self.path + "/data"
-
     def test_merge_one_day_full(self):
         pass
         # date_from = datetime.date(2020, 8, 11)
         # date_to = datetime.date(2020, 8, 11)
-        # raw_results = load_results(self.data_path, date_from, date_to)
+        # raw_results = load_results(data_path, date_from, date_to)
         # # Merge results using default.
         # (description, data) = merge_results(raw_results, 5)
         # # Output format has to be.
@@ -203,13 +192,13 @@ class TestMergeResults(unittest.TestCase):
     # def test_merge_seven_days(self):
     #     date_from = datetime.date(2020, 8, 11)
     #     date_to = datetime.date(2020, 8, 17)
-    #     raw_results = load_results(self.data_path, date_from, date_to)
+    #     raw_results = load_results(data_path, date_from, date_to)
     #     # Merge results using default.
     #     results = merge_results(raw_results)
 
     # def test_merge_one_day_part(self):
     #     date_from = datetime.date(2020, 9, 3)
     #     date_to = datetime.date(2020, 9, 3)
-    #     raw_results = load_results(self.data_path, date_from, date_to)
+    #     raw_results = load_results(data_path, date_from, date_to)
     #     # Merge results using default.
     #     results = merge_results(raw_results)
