@@ -9,6 +9,7 @@ from dataclasses import dataclass
 class Location:
     """ Stores location related data. """
     name: str
+    file_name: str
     ip_address: str
     label: str
 
@@ -16,7 +17,7 @@ class Location:
 # Adjust the values to suit your own set up.
 # Note: ex must always be the first entry.
 LOCATIONS = [
-    Location("ex", "", "External"),
-    Location("s0", "http://192.168.2.180", "Downstairs"),
-    Location("s1", "http://192.168.2.181", "Upstairs"),
+    Location("ex", "external", "", "External"),
+    Location("s0", "downstairs-back-room", "http://192.168.2.180", "Downstairs"),
+    Location("s1", "upstairs-landing", "http://192.168.2.181", "Upstairs"),
 ]

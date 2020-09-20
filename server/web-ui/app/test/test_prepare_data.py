@@ -2,10 +2,17 @@ import datetime
 import os
 import unittest
 
-from app.prepare_data import load_file, load_results, merge_results, LOCATIONS
+import app.prepare_data as pd
+
+# AJB HACK
+LOCATIONS = [
+    ["external"],
+    ["downstairs-back-room"],
+    ["upstairs-landing"],
+]
 
 
-class TestLoadFile(unittest.TestCase):
+class TestLoadDayResults(unittest.TestCase):
     def setUp(self):
         self.path = os.path.dirname(os.path.abspath(__file__))
         self.data_path = self.path + "/data"
@@ -20,25 +27,32 @@ class TestLoadFile(unittest.TestCase):
         # 08:18,21.3,73.9
         # Time,Temperature,Humidity
         # 08:21,20.6,73.8
-        file_name = self.data_path + "/2020-09-03-downstairs-back-room.csv"
+        location = "downstairs-back-room"
+        file_date = datetime.date(2020, 9, 3)
         # print(file_name)
-        (header, contents) = load_file(file_name)
-        # Verify header contents.
-        # print("HEADER", header)
-        self.assertEqual(header[0], "Time", "Header 0 wrong")
-        self.assertEqual(header[1], "Temperature", "Header 1 wrong")
-        self.assertEqual(header[2], "Humidity", "Header 2 wrong")
+        day_results = pd.load_day_results(self.data_path, location, file_date)
+        # Verify location.
+        self.assertEqual(day_results.location, location, "Location wrong")
+        # Verify SensorHeader contents.
+        # print("HEADER", day_results.header)
+        header_columns = day_results.header.columns
+        self.assertEqual(header_columns[0], "Time", "Header 0 wrong")
+        self.assertEqual(header_columns[1], "Temperature", "Header 1 wrong")
+        self.assertEqual(header_columns[2], "Humidity", "Header 2 wrong")
         # Verify readings.
-        # print("CONTENTS", contents)
+        # print("ENTRIES", day_results.entries)
         # Verify no header rows are in contents.
-        for row in contents:
-            self.assertNotEqual(row[0], "Time", "Header in contents")
+        for entry in day_results.entries:
+            self.assertNotEqual(entry.date_time, "Time", "Header in contents")
         # Verify number of rows.
-        self.assertEqual(len(contents), 3, "Should be 3 rows")
+        self.assertEqual(len(day_results.entries), 3, "Should be 3 rows")
         # Verify row 1 contains 08:18,21.3,73.9.
-        self.assertEqual(contents[1][0], datetime.time(8, 18), "Row 1,0 wrong")
-        self.assertEqual(contents[1][1], 21.3, "Row 1,1 wrong")
-        self.assertEqual(contents[1][2], 73.9, "Row 1,2 wrong")
+        entry = day_results.entries[0]
+        time = datetime.time(8, 18)
+        expected_datetime = datetime.datetime.combine(file_date, time)
+        self.assertEqual(entry.date_time, expected_datetime, "Date time wrong")
+        self.assertEqual(entry.temperature, 21.3, "Temperature wrong")
+        self.assertEqual(entry.humidity, 73.9, "Humidity wrong")
 
     def test_file_2(self):
         # The data in this file are:
@@ -48,44 +62,36 @@ class TestLoadFile(unittest.TestCase):
         # Time,Temperature,Humidity
         # Time,Temperature,Humidity
         # 08:21,20.2,68.1
-        file_name = self.data_path + "/2020-09-03-upstairs-landing.csv"
+        location = "upstairs-landing"
+        file_date = datetime.date(2020, 9, 3)
         # print(file_name)
-        (header, contents) = load_file(file_name)
-        # Verify header contents.
-        # print("HEADER", header)
-        self.assertEqual(header[0], "Time", "Header 0 wrong")
-        self.assertEqual(header[1], "Temperature", "Header 1 wrong")
-        self.assertEqual(header[2], "Humidity", "Header 2 wrong")
+        day_results = pd.load_day_results(self.data_path, location, file_date)
         # Verify readings.
-        # print("CONTENTS", contents)
+        # print("ENTRIES", day_results.entries)
         # Verify no header rows are in contents.
-        for row in contents:
-            self.assertNotEqual(row[0], "Time", "Header in contents")
+        for entry in day_results.entries:
+            self.assertNotEqual(entry.date_time, "Time", "Header in contents")
         # Verify number of rows.
-        self.assertEqual(len(contents), 1, "Should be 1 row")
-        # Verify row 1 contains 08:18,21.3,73.9.
-        self.assertEqual(contents[0][0], datetime.time(8, 21), "Row 1,0 wrong")
-        self.assertEqual(contents[0][1], 20.2, "Row 1,1 wrong")
-        self.assertEqual(contents[0][2], 68.1, "Row 1,2 wrong")
+        self.assertEqual(len(day_results.entries), 1, "Should be 1 row")
+        # Verify number of rows.
+        # Verify row 1 contains 08:21,20.2,68.1.
+        entry = day_results.entries[0]
+        time = datetime.time(8, 21)
+        expected_datetime = datetime.datetime.combine(file_date, time)
+        self.assertEqual(entry.date_time, expected_datetime, "Date time wrong")
+        self.assertEqual(entry.temperature, 20.2, "Temperature wrong")
+        self.assertEqual(entry.humidity, 68.1, "Humidity wrong")
 
     def test_file_3(self):
         # Test different header row and no results.
         # The data in this file are:
         # Time,Temperature C,Humidity %,Wind m/s,Gust m/s
-        file_name = self.data_path + "/2020-09-03-external.csv"
+        location = "external"
+        file_date = datetime.date(2020, 9, 3)
         # print(file_name)
-        (header, contents) = load_file(file_name)
-        # Verify header contents.
-        # print("HEADER", header)
-        self.assertEqual(header[0], "Time", "Header 0 wrong")
-        self.assertEqual(header[1], "Temperature C", "Header 1 wrong")
-        self.assertEqual(header[2], "Humidity %", "Header 2 wrong")
-        self.assertEqual(header[3], "Wind m/s", "Header 3 wrong")
-        self.assertEqual(header[4], "Gust m/s", "Header 4 wrong")
-        # Verify readings.
-        # print("CONTENTS", contents)
-        # Verify contents are empty.
-        self.assertEqual(len(contents), 0, "Should be 0 rows")
+        day_results = pd.load_day_results(self.data_path, location, file_date)
+        # Verify entries are empty.
+        self.assertEqual(len(day_results.entries), 0, "Should be 0 rows")
 
 
 class TestLoadResults(unittest.TestCase):
@@ -203,7 +209,7 @@ class TestMergeResults(unittest.TestCase):
         date_to = datetime.date(2020, 8, 11)
         raw_results = load_results(self.data_path, date_from, date_to)
         # Merge results using default.
-        (description, data) = merge_results(raw_results)
+        (description, data) = merge_results(raw_results, 5)
         # Output format has to be.
         # description = {
         #     "time_of_day": ("timeofday", "Time"),
