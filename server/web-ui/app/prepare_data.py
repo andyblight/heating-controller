@@ -16,10 +16,6 @@ sys.path.insert(0, locations_dir)
 from locations import Location, LOCATIONS
 
 
-# TODO Can this be shared with the scrapers? SSOT
-DATA_DIRECTORY = "../data"
-
-
 class SensorHeader:
     def __init__(self):
         # Hardcoded for now.
@@ -36,7 +32,7 @@ class SensorEntry:
 
 
 class SensorResults:
-    def __init__(self, location: str):
+    def __init__(self, location: Location):
         self.location = location
         self.header = SensorHeader()
         self.entries = []
@@ -58,7 +54,8 @@ def load_day_results(path, location, file_date):
     file_name = path + "/"
     file_date_iso = file_date.isoformat()
     file_name += file_date_iso + "-"
-    file_name += location + ".csv"
+    # print("Location is ", location)
+    file_name += location.file_name + ".csv"
     with open(file_name, newline="") as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=",", quotechar='"')
         for row in csv_reader:
@@ -149,16 +146,16 @@ def merge_results(raw_results, interval_minutes):
     # ]
 
 
-def prepare_todays_results():
-    # Work out today's date.
-    today = datetime.date.today()
-    file_today = today.isoformat()
-    raw_contents = []
-    # Read today's CSV files.
-    for location in LOCATIONS:
-        file_name = DATA_DIRECTORY + "/" + file_today + "-" + location + ".csv"
-        contents = load_file(file_name)
-        raw_contents.append(location, contents)
-    # Merge data from all files.
-    (description, data) = merge_results(raw_contents, 5)
-    return (description, data)
+# def prepare_todays_results():
+#     # Work out today's date.
+#     today = datetime.date.today()
+#     file_today = today.isoformat()
+#     raw_contents = []
+#     # Read today's CSV files.
+#     for location in LOCATIONS:
+#         file_name = DATA_DIRECTORY + "/" + file_today + "-" + location + ".csv"
+#         contents = load_file(file_name)
+#         raw_contents.append(location, contents)
+#     # Merge data from all files.
+#     (description, data) = merge_results(raw_contents, 5)
+#     return (description, data)
