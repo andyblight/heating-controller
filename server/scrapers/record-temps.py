@@ -9,7 +9,7 @@ import time
 # pip3 imports
 from bs4 import BeautifulSoup
 
-DATA_DIRECTORY = "../data"
+from locations import DATA_DIRECTORY
 
 # INTERVAL_TIME_S = 5
 INTERVAL_TIME_S = 60 * 5

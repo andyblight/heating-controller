@@ -7,7 +7,9 @@ from dataclasses import dataclass
 
 @dataclass
 class Location:
-    """ Stores location related data. """
+    """ Stores location related data.
+    dataclass creates an __init__ function that expects the four members.
+    """
     name: str
     file_name: str
     ip_address: str
@@ -21,3 +23,6 @@ LOCATIONS = [
     Location("s0", "downstairs-back-room", "http://192.168.2.180", "Downstairs"),
     Location("s1", "upstairs-landing", "http://192.168.2.181", "Upstairs"),
 ]
+
+# Path to data directory.
+DATA_DIRECTORY = "../data"

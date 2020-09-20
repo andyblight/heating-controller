@@ -12,6 +12,8 @@ import time
 from bs4 import BeautifulSoup
 import pandas
 
+# Local imports
+from locations import DATA_DIRECTORY
 
 # INTERVAL_TIME_S = 5
 INTERVAL_TIME_S = 60 * 5
@@ -21,7 +23,6 @@ INTERVAL_TIME_S = 60 * 5
 OPEN_WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?id=2640132&appid="
 API_KEY_FILE = "/home/andy/secrets/open-weather-api-key"
 DEGREES_KELVIN = 273.15
-DATA_DIRECTORY = "../data"
 
 # Set up scheduler
 scheduler = sched.scheduler(time.time, time.sleep)
