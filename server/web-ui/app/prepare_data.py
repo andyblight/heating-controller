@@ -175,3 +175,15 @@ def merge_results(all_results, interval_minutes):
 #     # Merge data from all files.
 #     (description, data) = merge_results(raw_contents, 5)
 #     return (description, data)
+
+def today_temperature(file_name):
+    pass
+
+def today_humidity(file_name):
+    pass
+
+def last_seven_days_temperature(file_name):
+    pass
+
+def last_seven_days_humidity(file_name):
+    pass

@@ -64,10 +64,10 @@ The charts page shows the raw sensor data over different time ranges along with
 the heating demand.  This can be used for manual verification of the algorithms
 being used to control the heating.  It also looks cool!
 
-When the charts page is requested, three CSV files are prepared for today, the
-past 7 days and the past 30 days.  The CSV generated files have dates encoded
-in the file names so that the minimum work possible is done.  The charts
-page then shows the collated CSV information in three charts.
+When the charts page is requested, three CSV files are prepared for today and
+the past 7 days.  The CSV generated files have dates encoded in the file names
+so that the minimum work possible is done.  The charts page then shows the
+collated CSV information in three charts.
 
 ### Notes
 
