@@ -1,7 +1,7 @@
 from flask import render_template
 from flask_table import Table, Col
 from app import app
-from app.charts import chart_today, chart_seven_days, chart_thirty_days
+from app.charts import chart_today_temperature, chart_today_humidity
 
 
 class SensorTable(Table):
@@ -29,15 +29,26 @@ def index():
     return render_template("index.html", title="Home", table=SensorTable(sensor_values))
 
 
-@app.route("/charts")
-def charts():
-    jscode_today = chart_today()
-    jscode_seven = chart_seven_days()
-    jscode_thirty = chart_thirty_days()
+@app.route("/today")
+def today():
+    jscode_today_temperature = chart_today_temperature()
+    jscode_today_humidity = chart_today_humidity()
     return render_template(
-        "charts.html",
-        title="Charts",
-        jscode_chart_today=jscode_today,
-        jscode_chart_seven=jscode_seven,
-        jscode_chart_thirty=jscode_thirty,
+        "today.html",
+        title="Today",
+        jscode_chart_today_temperature=jscode_today_temperature,
+        jscode_chart_today_humidity=jscode_today_humidity,
+    )
+
+@app.route("/seven")
+def seven():
+    # jscode_today = chart_today()
+    # jscode_seven = chart_seven_days()
+    # jscode_thirty = chart_thirty_days()
+    return render_template(
+        "seven.html",
+        title="Last seven days",
+        # jscode_chart_today=jscode_today,
+        # jscode_chart_seven=jscode_seven,
+        # jscode_chart_thirty=jscode_thirty,
     )

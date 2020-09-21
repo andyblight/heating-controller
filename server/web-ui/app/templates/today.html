@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <head>
+        <script src="https://www.gstatic.com/charts/loader.js"></script>
+        <script>
+            google.charts.load('current', {'packages':['line']});
+            google.charts.setOnLoadCallback(drawChartTodayTemperature);
+            google.charts.setOnLoadCallback(drawChartTodayHumidity);
+            function drawChartTodayTemperature() {
+                {{jscode_chart_today_temperature|safe}}
+                var options = {
+                    chart: {
+                    title: "Temperature"
+                    },
+                    width: 900,
+                    height: 500
+                };
+                var chart = new google.charts.Line(document.getElementById("linechart_today_temperature"));
+                chart.draw(jscode_chart_today_temperature, google.charts.Line.convertOptions(options));
+            }
+            function drawChartTodayHumidity() {
+                {{jscode_chart_today_humidity|safe}}
+                var options = {
+                    chart: {
+                    title: "Humidity"
+                    },
+                    width: 900,
+                    height: 500
+                };
+                var chart = new google.charts.Line(document.getElementById("linechart_today_humidity"));
+                chart.draw(jscode_chart_today_humidity, google.charts.Line.convertOptions(options));
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Today</h1>
+        <div id="linechart_today_temperature"></div>
+        <div id="linechart_today_humidity"></div>
+    </body>
+
+{% endblock %}

@@ -99,15 +99,17 @@ def load_results(path, date_from, date_to):
     """ Returns a list of SensorResults objects, one per location.
     Each SensorResults object has the data for the given range of dates.
     """
-    combined_results = []
+    all_results = []
     for location in LOCATIONS:
         day_results = load_results_for_location(path, location, date_from, date_to)
-        combined_results.append(day_results)
-    return combined_results
+        all_results.append(day_results)
+    return all_results
 
 
 def __build_description():
-    """ Use locations package to build up the description. """
+    """ Use locations package to build up the description for the chart
+    structure.
+    """
     description = {"date_time": ("date", "Time")}
     for location in LOCATIONS:
         print(location)
@@ -117,16 +119,30 @@ def __build_description():
     return description
 
 
-def merge_results(raw_results, interval_minutes):
-    description = __build_description()
-    data = []
-    for day_results in raw_results:
-        location_results = day_results[1]
+def __build_data_points(sensor_entry):
+    data_points = {}
+    data_points["time_of_day"] = sensor_entry.
+    data_points["external"] =
+    data_points["sensor1"] =
+    data_points["sensor2"] =
+        # #     "time_of_day": ,
+        # #     "external": ("number", "External"),
+        # #     "sensor1": ("number", "Upstairs"),
+        # #     "sensor2": ("number", "Downstairs"),
         # for sensor in
         # for location_data in location_results:
         #     location = location_data[0]
         #     # Add each sensor entry label to description
         #     description[location] = ("number", location.title())
+    return data_points
+
+def merge_results(all_results, interval_minutes):
+    description = __build_description()
+    data = []
+    for location_results in all_results:
+        for entry in location_results.entries:
+            data_points = __build_data_points(entry)
+            data.append(data_points)
     return (description, data)
 
     # Output format has to be.

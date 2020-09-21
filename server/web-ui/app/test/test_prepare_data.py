@@ -134,18 +134,17 @@ class TestLoadResults(unittest.TestCase):
     Only need to test that all locations are loaded.
     Date range and contents of the entries have been tested elsewhere.
     """
+
     def test_load_results(self):
         # Use a range of dates for fun!
         date_from = datetime.date(2020, 8, 11)
         date_to = datetime.date(2020, 8, 14)
-        location_results_list = pd.load_results(
-            data_path, date_from, date_to
-        )
+        location_results_list = pd.load_results(data_path, date_from, date_to)
         # print(location_results_list)
         # Check that there are the correct number of locations.
         self.assertEqual(
-                len(location_results_list), len(LOCATIONS), "Incorrect number of locations"
-            )
+            len(location_results_list), len(LOCATIONS), "Incorrect number of locations"
+        )
         # Verify that each location is in the master list.
         for location_results in location_results_list:
             found = False
@@ -158,12 +157,13 @@ class TestLoadResults(unittest.TestCase):
 
 class TestMergeResults(unittest.TestCase):
     def test_merge_one_day_full(self):
-        pass
-        # date_from = datetime.date(2020, 8, 11)
-        # date_to = datetime.date(2020, 8, 11)
-        # raw_results = load_results(data_path, date_from, date_to)
-        # # Merge results using default.
-        # (description, data) = merge_results(raw_results, 5)
+        date_from = datetime.date(2020, 8, 11)
+        date_to = datetime.date(2020, 8, 11)
+        raw_results = pd.load_results(data_path, date_from, date_to)
+        # Merge results using 15 minute intervals.
+        (description, data) = pd.merge_results(raw_results, 15)
+        print("DESCRIPTION", description)
+        print("DATA", data)
         # # Output format has to be.
         # # description = {
         # #     "time_of_day": ("timeofday", "Time"),
