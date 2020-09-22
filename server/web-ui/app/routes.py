@@ -1,7 +1,12 @@
 from flask import render_template
 from flask_table import Table, Col
 from app import app
-from app.charts import chart_today_temperature, chart_today_humidity, chart_seven_temperature, chart_seven_humidity
+from app.charts import (
+    chart_today_temperature,
+    chart_today_humidity,
+    chart_seven_temperature,
+    chart_seven_humidity,
+)
 
 
 class SensorTable(Table):

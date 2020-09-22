@@ -70,7 +70,7 @@ def load_data_file(file_name):
     and humidity have the same description, this function can be used for both
     data sets.
     """
-    pass
+    print(file_name)
 
 
 def chart_today_temperature():
@@ -78,12 +78,12 @@ def chart_today_temperature():
     # TODO Call function that returns temperature_data for today.
     # Function in prepare_data.py is called to create a CSV file.
     # The prepared CSV file is then loaded into temperature_data and returned.
-    # prepare_data.today_temperature("today_temperature.csv")
+    # prepare_data.create_files_today()
     # load_data_file("today_temperature.csv")
     chart.LoadData(temperature_data)
     jscode_today_temperature = chart.ToJSCode(
         "jscode_chart_today_temperature",
-        columns_order=("time_of_day", "external", "sensor1", "sensor2")
+        columns_order=("time_of_day", "external", "sensor1", "sensor2"),
     )
     return jscode_today_temperature
 
@@ -107,7 +107,7 @@ def chart_seven_temperature():
     chart.LoadData(temperature_data)
     jscode_seven_temperature = chart.ToJSCode(
         "jscode_chart_seven_temperature",
-        columns_order=("time_of_day", "external", "sensor1", "sensor2")
+        columns_order=("time_of_day", "external", "sensor1", "sensor2"),
     )
     return jscode_seven_temperature
 

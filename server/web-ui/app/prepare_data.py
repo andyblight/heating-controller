@@ -16,6 +16,13 @@ sys.path.insert(0, locations_dir)
 from locations import Location, LOCATIONS
 
 
+# Filenames for charts.py to use.
+FILE_TODAY_HUMIDITY = "today_humidity.csv"
+FILE_TODAY_TEMPERATURE = "today_temperature.csv"
+FILE_SEVEN_DAYS_HUMIDITY = "seven_humidity.csv"
+FILE_SEVEN_DAYS_TEMPERATURE = "seven_temperature.csv"
+
+
 class SensorHeader:
     def __init__(self):
         # Hardcoded for now.
@@ -106,84 +113,31 @@ def load_results(path, date_from, date_to):
     return all_results
 
 
-def __build_description():
-    """ Use locations package to build up the description for the chart
-    structure.
-    """
-    description = {"date_time": ("date", "Time")}
-    for location in LOCATIONS:
-        print(location)
-        print(location.name, location.label)
-        description[location.name] = ("number", location.label)
-    print(description)
-    return description
-
-
-def __build_data_points(sensor_entry):
-    data_points = {}
-    data_points["time_of_day"] = sensor_entry.
-    data_points["external"] =
-    data_points["sensor1"] =
-    data_points["sensor2"] =
-        # #     "time_of_day": ,
-        # #     "external": ("number", "External"),
-        # #     "sensor1": ("number", "Upstairs"),
-        # #     "sensor2": ("number", "Downstairs"),
-        # for sensor in
-        # for location_data in location_results:
-        #     location = location_data[0]
-        #     # Add each sensor entry label to description
-        #     description[location] = ("number", location.title())
-    return data_points
-
 def merge_results(all_results, interval_minutes):
-    description = __build_description()
-    data = []
+    """ Merges results from external and all sensors into two CSV files, one
+    for temperature and the other for humidity.
+    The columns in each file are:
+        datetime, external, <sensor1 location name>, ..., <sensorN location name>
+    """
     for location_results in all_results:
         for entry in location_results.entries:
             data_points = __build_data_points(entry)
             data.append(data_points)
-    return (description, data)
-
-    # Output format has to be.
-    # description = {
-    #     "time_of_day": ("timeofday", "Time"),
-    #     "external": ("number", "External"),
-    #     "sensor1": ("number", "Upstairs"),
-    #     "sensor2": ("number", "Downstairs"),
-    # }
-    # data = [
-    #     {
-    #         "time_of_day": datetime.time(hour=11, minute=30),
-    #         "external": 11.7,
-    #         "sensor1": 18.8,
-    #         "sensor2": 10.5,
-    #     },
-    # ]
 
 
-# def prepare_todays_results():
-#     # Work out today's date.
-#     today = datetime.date.today()
-#     file_today = today.isoformat()
-#     raw_contents = []
-#     # Read today's CSV files.
-#     for location in LOCATIONS:
-#         file_name = DATA_DIRECTORY + "/" + file_today + "-" + location + ".csv"
-#         contents = load_file(file_name)
-#         raw_contents.append(location, contents)
-#     # Merge data from all files.
-#     (description, data) = merge_results(raw_contents, 5)
-#     return (description, data)
-
-def today_temperature(file_name):
+def create_files_today():
+    """ """
+    # today = ...
+    # path = ...
+    # interval_minutes = 15
+    # all_results = load_result(path, today, today)
+    # (humidity_results, temperature_results) = merge_results(all_results, interval_minutes)
+    # write_results(humidity_results)
+    # write_results(temperature_results)
     pass
 
-def today_humidity(file_name):
-    pass
 
-def last_seven_days_temperature(file_name):
-    pass
-
-def last_seven_days_humidity(file_name):
+def create_files_seven_days():
+    """ """
+    # load
     pass
