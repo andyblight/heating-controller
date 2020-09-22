@@ -10,10 +10,12 @@ from app.charts import load_data_file
 data_path = os.path.dirname(os.path.abspath(__file__)) + "/data"
 
 
-EMPTY_FILE_NAME = data_path + "/empty.csv"
-SINGLE_FILE_NAME = data_path + "/single.csv"
-TWO_FILE_NAME = data_path + "/two.csv"
-FIVE_FILE_NAME = data_path + "/five.csv"
+NOT_FOUND_PATH = data_path + "/not_found.csv"
+EMPTY_PATH = data_path + "/empty.csv"
+SINGLE_PATH = data_path + "/single.csv"
+TWO_PATH = data_path + "/two.csv"
+FIVE_PATH = data_path + "/five.csv"
+SEVEN_DAYS_PATH = data_path + "/" + FILE_SEVEN_DAYS_TEMPERATURE
 
 temperature_data = [
     {
@@ -48,6 +50,7 @@ temperature_data = [
     },
 ]
 
+
 def create_row(index):
     row = []
     row.append(temperature_data[index]["time_of_day"])
@@ -59,23 +62,19 @@ def create_row(index):
 
 
 def create_files():
-    with open(SINGLE_FILE_NAME, "w", newline="") as csvfile:
+    with open(SINGLE_PATH, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
         row = create_row(0)
         writer.writerow(row)
 
-    with open(TWO_FILE_NAME, "w", newline="") as csvfile:
-        writer = csv.writer(
-            csvfile, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
-        )
+    with open(TWO_PATH, "w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
         for i in range(0, 2):
             row = create_row(i)
             writer.writerow(row)
 
-    with open(FIVE_FILE_NAME, "w", newline="") as csvfile:
-        writer = csv.writer(
-            csvfile, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
-        )
+    with open(FIVE_PATH, "w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
         for i in range(0, 5):
             row = create_row(i)
             writer.writerow(row)
@@ -85,25 +84,25 @@ class TestChartsLoadData(unittest.TestCase):
     """ Test the function load_data() in charts.py.
     """
 
-    def setUp(self):
-        # Only need to do this to create the files.
-        # create_files()
+    # Only need to do this to create the files.
+    # def setUp(self):
+    #     create_files()
 
     def test_file_not_found(self):
-        load_data_file("not_found.csv")
+        load_data_file(NOT_FOUND_PATH)
 
     def test_empty_file(self):
-        load_data_file("empty.csv")
+        load_data_file(EMPTY_PATH)
 
     def test_single_entry(self):
-        load_data_file("single.csv")
+        load_data_file(SINGLE_PATH)
 
     def test_two_entries(self):
-        load_data_file("two.csv")
+        load_data_file(TWO_PATH)
 
     def test_five_entries(self):
-        load_data_file("five.csv")
+        load_data_file(FIVE_PATH)
 
     def test_seven_days(self):
-        """ Tests a real data file containing seven days of data. """
-        load_data_file(FILE_SEVEN_DAYS_TEMPERATURE)
+        """ Use a data file containing seven days of data. """
+        load_data_file(SEVEN_DAYS_PATH)
