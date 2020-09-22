@@ -59,7 +59,7 @@ class TemperatureReader:
         # print("humidity", humidity)
 
     def write_to_file(self):
-        time_now = datetime.now()
+        time_now = datetime.utcnow()
         time_str = time_now.strftime("%H:%M")
         # print(
         #     "{0:5s} {1:20s}: {2:4}C, {3:4}%".format(

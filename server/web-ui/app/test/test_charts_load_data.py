@@ -53,7 +53,12 @@ temperature_data = [
 
 def create_row(index):
     row = []
-    row.append(temperature_data[index]["time_of_day"])
+    # Create datetime from time.
+    today = datetime.datetime.utcnow()
+    entry_time = temperature_data[index]["time_of_day"]
+    date_time = datetime.datetime.combine(today, entry_time)
+    row.append(date_time)
+    # Just append teh rest of the values.
     row.append(temperature_data[index]["external"])
     row.append(temperature_data[index]["sensor1"])
     row.append(temperature_data[index]["sensor2"])

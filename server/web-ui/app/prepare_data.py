@@ -64,7 +64,7 @@ def load_day_results(path, location, file_date):
     # print("Location is ", location)
     file_name += location.file_name + ".csv"
     with open(file_name, newline="") as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=",", quotechar='"')
+        csv_reader = csv.reader(csv_file)
         for row in csv_reader:
             # print(row)
             # TODO Could use this but currently hard coded in SensorHeader.

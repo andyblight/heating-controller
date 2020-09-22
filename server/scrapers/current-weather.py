@@ -68,7 +68,7 @@ def close_file():
 def write_to_file(temperature, humidity, wind, degrees, gust):
     # print("wtf")
     global f_csv_file, f_csv_writer
-    time_now = datetime.now()
+    time_now = datetime.utcnow()
     time_str = time_now.strftime("%H:%M")
     f_csv_writer.writerow(
         [time_str, temperature, humidity, wind, degrees, gust])

@@ -1,5 +1,7 @@
+import csv
 import datetime
 import gviz_api
+import os
 import app.prepare_data
 
 description = {
@@ -63,6 +65,25 @@ humidity_data = [
     },
 ]
 
+def __convert_row(row):
+    """ A row looks like this:
+      ['2020-09-22 08:30:00', '15.4', '20.1', '22.3']
+    and needs to be formatted like this:
+        {
+            "time_of_day": datetime.time(hour=11, minute=30),
+            "external": 60.5,
+            "sensor1": 80.8,
+            "sensor2": 81.2,
+        }
+    """
+    entry = {}
+    date_time = datetime.datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S")
+    entry["time_of_day"] = date_time
+    entry["external"] = float(row[1])
+    entry["sensor1"] = float(row[2])
+    entry["sensor2"] = float(row[3])
+    return entry
+
 
 def load_data_file(file_name):
     """ This loads the specified CSV file filling out an object containing the
@@ -70,7 +91,22 @@ def load_data_file(file_name):
     and humidity have the same description, this function can be used for both
     data sets.
     """
+    data = []
+    print()
     print(file_name)
+    file_exists = os.path.isfile(file_name)
+    if file_exists:
+        with open(file_name) as csv_file:
+            csv_reader = csv.reader(csv_file)
+            for row in csv_reader:
+                print(row)
+                entry = __convert_row(row)
+                data.append(entry)
+    else:
+        # TODO Do something useful here
+        print("File:", file_name, "not found.")
+    print(data)
+    return data
 
 
 def chart_today_temperature():
@@ -79,7 +115,7 @@ def chart_today_temperature():
     # Function in prepare_data.py is called to create a CSV file.
     # The prepared CSV file is then loaded into temperature_data and returned.
     # prepare_data.create_files_today()
-    # load_data_file("today_temperature.csv")
+    # temperature_data = load_data_file("today_temperature.csv")
     chart.LoadData(temperature_data)
     jscode_today_temperature = chart.ToJSCode(
         "jscode_chart_today_temperature",
