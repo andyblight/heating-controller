@@ -48,4 +48,4 @@ The repo contains the following:
 * server - The code for the server.  This runs in a docker on the server so it
 is easier to maintain and can be developed on other PCs.  This includes:
   * scrapers - The code to scrape external websites and store it in CSV files.
-
+  * web-ui - Displays information gathered by the scrapers.

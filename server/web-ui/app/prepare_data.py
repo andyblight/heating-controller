@@ -131,6 +131,14 @@ def merge_results(all_results, interval_minutes):
     temperature_results = {}
     for location_results in all_results:
         HERE!!!
+
+# NEW
+    # for time in times_generator(use interval_minutes)
+    #     for location in loctions
+    #         look up entry using time as key into location dictionary. datetime is ok to use as a key directly.
+    #         use entry returned to fill out each results entry, temperature and humidity.
+    #     Append each results entry to results list.
+
     return (humidity_results, temperature_results)
 
 
