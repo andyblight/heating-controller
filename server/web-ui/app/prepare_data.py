@@ -2,25 +2,27 @@
 
 import csv
 import datetime
-
 import os, sys, pathlib
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-path = pathlib.Path(current_dir)
-parent_dir = path.parent.parent
-# print(parent_dir)
-locations_dir = os.path.join(parent_dir, "locations")
+# Add the locations directory to the system path so that the
+# locations package can be imported.
+__current_dir = os.path.dirname(os.path.abspath(__file__))
+__path = pathlib.Path(__current_dir)
+__parent_dir = __path.parent.parent
+# print(__parent_dir)
+__locations_dir = os.path.join(__parent_dir, "locations")
 # print(locations_dir)
-sys.path.insert(0, locations_dir)
+sys.path.insert(0, __locations_dir)
 # print(sys.path)
 from locations import Location, LOCATIONS
 
-
-# Filenames for charts.py to use.
-FILE_TODAY_HUMIDITY = "today_humidity.csv"
-FILE_TODAY_TEMPERATURE = "today_temperature.csv"
-FILE_SEVEN_DAYS_HUMIDITY = "seven_humidity.csv"
-FILE_SEVEN_DAYS_TEMPERATURE = "seven_temperature.csv"
+# File paths for charts.py to use.
+__data_files_directory = os.path.join(parent_dir, "data")
+__temp_data_directory = os.path.join(__current_dir, "temp_data")
+PATH_TODAY_HUMIDITY = os.path.join(__temp_data_directory, "today_humidity.csv")
+PATH_TODAY_TEMPERATURE = os.path.join(__temp_data_directory, "today_temperature.csv")
+PATH_SEVEN_DAY_HUMIDITY = os.path.join(__temp_data_directory, "seven_humidity.csv")
+PATH_SEVEN_DAY_TEMPERATURE = os.path.join(__temp_data_directory, "seven_temperature.csv")
 
 
 class SensorHeader:
@@ -42,10 +44,10 @@ class SensorResults:
     def __init__(self, location: Location):
         self.location = location
         self.header = SensorHeader()
-        self.entries = []
+        self.entries = {}
 
     def append(self, entry):
-        self.entries.append(entry)
+        self.entries[entry.date_time] = entry
 
     def extend(self, day_results):
         if self.location != day_results.location:
@@ -114,30 +116,61 @@ def load_results(path, date_from, date_to):
 
 
 def merge_results(all_results, interval_minutes):
-    """ Merges results from external and all sensors into two CSV files, one
+    """ Merges all_results from external and all sensors into two lists, one
     for temperature and the other for humidity.
-    The columns in each file are:
-        datetime, external, <sensor1 location name>, ..., <sensorN location name>
+    all_results is a list of SensorResults.
+    Each SensorResults object has a dictionary of SensorEntry values.
+    Each SensorResults object has to be iterated over for each location,
+    adding the entry closest to the datetime being requested to the entry in
+    the results dictionary.
+    The entries in the lists are organised by time intervals.
+    Each entry for humidity and temperature has the same order:
+        [datetime, external, sensor1, sensor2]
     """
+    humidity_results = {}
+    temperature_results = {}
     for location_results in all_results:
-        for entry in location_results.entries:
-            data_points = __build_data_points(entry)
-            data.append(data_points)
+        HERE!!!
+    return (humidity_results, temperature_results)
+
+
+def write_results(results, file_path):
+    """ Writes the given results to a CSV file at the specified path.
+    File has no header row.  Columns are:
+        [datetime, external, sensor1, sensor2]
+    """
+    with open(file_path, "w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        for entry in results:
+            # As the entry is in the correct order, write it to file.
+            writer.writerow(entry)
 
 
 def create_files_today():
-    """ """
-    # today = ...
-    # path = ...
-    # interval_minutes = 15
-    # all_results = load_result(path, today, today)
-    # (humidity_results, temperature_results) = merge_results(all_results, interval_minutes)
-    # write_results(humidity_results)
-    # write_results(temperature_results)
-    pass
+    """ Creates two results files (temperature and humidity) from external and
+    other sensor data files.
+    The columns in each results file are:
+        datetime, external, <sensor1 location name>, ..., <sensorN location name>
+    """
+    today = datetime.date.today()
+    interval_minutes = 10
+    all_results = load_results(__data_files_directory, today, today)
+    (humidity_results, temperature_results) = merge_results(all_results, interval_minutes)
+    write_results(humidity_results, PATH_TODAY_HUMIDITY)
+    write_results(temperature_results, PATH_TODAY_TEMPERATURE)
 
 
 def create_files_seven_days():
-    """ """
-    # load
-    pass
+    """ Creates two results files (temperature and humidity) from external and
+    other sensor data files for the previous seven days (not including today).
+    The columns in each results file are:
+        datetime, external, <sensor1 location name>, ..., <sensorN location name>
+    """
+    today = datetime.date.today()
+    date_from = today - 1 day
+    date_to = today - 8 day
+    interval_minutes = 30
+    all_results = load_results(__data_files_directory, date_from, date_to)
+    (humidity_results, temperature_results) = merge_results(all_results, interval_minutes)
+    write_results(humidity_results, PATH_SEVEN_DAY_HUMIDITY)
+    write_results(temperature_results, PATH_SEVEN_DAY_TEMPERATURE)

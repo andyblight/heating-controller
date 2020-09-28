@@ -3,6 +3,7 @@ import os
 import unittest
 
 import app.prepare_data as pd
+from app.charts import description as charts_description
 from locations import Location, LOCATIONS
 
 # Set up path to test data once.
@@ -161,9 +162,10 @@ class TestMergeResults(unittest.TestCase):
         date_to = datetime.date(2020, 8, 11)
         raw_results = pd.load_results(data_path, date_from, date_to)
         # Merge results using 15 minute intervals.
-        (description, data) = pd.merge_results(raw_results, 15)
-        print("DESCRIPTION", description)
-        print("DATA", data)
+        (humidity, temperature) = pd.merge_results(raw_results, 15)
+        print("DESCRIPTION", charts_description)
+        print("Humidity", humidity)
+        print("Temperature", temperature)
         # # Output format has to be.
         # # description = {
         # #     "time_of_day": ("timeofday", "Time"),

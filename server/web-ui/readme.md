@@ -15,6 +15,7 @@ To run the tests, use:
 
 ```text
 python3 -m unittest app/test/test_prepare_data.py
+python3 -m unittest app/test/test_charts_load_data.py
 ```
 
 ## Development
