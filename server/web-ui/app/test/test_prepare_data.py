@@ -128,7 +128,7 @@ class TestLoadResultsForLocation(unittest.TestCase):
 
 
 class TestLoadResults(unittest.TestCase):
-    """ Test load_results().
+    """Test load_results().
     Verify that all locations are loaded for the specifed date range.
     Only need to test that all locations are loaded.
     Date range and contents of the entries have been tested elsewhere.
@@ -201,7 +201,7 @@ class TestMergeResults(unittest.TestCase):
 
 
 class TestWriteMergedResults(unittest.TestCase):
-    """ Test the functions prepare_date.write_merged_results and
+    """Test the functions prepare_date.write_merged_results and
     charts.load_data_file.
     """
 
@@ -239,3 +239,13 @@ class TestWriteMergedResults(unittest.TestCase):
             datetime.datetime(2020, 8, 11, 2, 0),
             "Datetime incorrect.",
         )
+
+
+class TestChartsCreateFiles(unittest.TestCase):
+    """Test the functions create_files_today and create_files_seven_days."""
+
+    def test_create_files_today(self):
+        pass
+
+    def test_create_files_seven_days(self):
+        pass

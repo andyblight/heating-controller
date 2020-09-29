@@ -86,8 +86,7 @@ def create_files():
 
 
 class TestChartsLoadData(unittest.TestCase):
-    """ Test the function load_data() in charts.py.
-    """
+    """Test the function load_data() in charts.py."""
 
     # Only need to do this to create the files.
     # def setUp(self):
@@ -111,3 +110,4 @@ class TestChartsLoadData(unittest.TestCase):
     def test_seven_days(self):
         """ Use a data file containing seven days of data. """
         load_data_file(SEVEN_DAYS_PATH)
+

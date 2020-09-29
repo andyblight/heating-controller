@@ -15,7 +15,7 @@ description = {
 
 
 def __convert_row(row):
-    """ A row looks like this:
+    """A row looks like this:
       ['2020-09-22 08:30:00', '15.4', '20.1', '22.3']
     and needs to be formatted like this:
         {
@@ -35,7 +35,7 @@ def __convert_row(row):
 
 
 def load_data_file(file_name):
-    """ This loads the specified CSV file filling out an object containing the
+    """This loads the specified CSV file filling out an object containing the
     data in the required format for passing to the charts.  As the temperature
     and humidity have the same description, this function can be used for both
     data sets.

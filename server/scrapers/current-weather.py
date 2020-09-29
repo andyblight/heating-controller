@@ -9,7 +9,6 @@ import sched
 import time
 
 # pip3 imports
-from bs4 import BeautifulSoup
 import pandas
 
 # Local imports
@@ -70,8 +69,7 @@ def write_to_file(temperature, humidity, wind, degrees, gust):
     global f_csv_file, f_csv_writer
     time_now = datetime.utcnow()
     time_str = time_now.strftime("%H:%M")
-    f_csv_writer.writerow(
-        [time_str, temperature, humidity, wind, degrees, gust])
+    f_csv_writer.writerow([time_str, temperature, humidity, wind, degrees, gust])
     f_csv_file.flush()
 
 

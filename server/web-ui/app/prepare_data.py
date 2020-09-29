@@ -59,7 +59,7 @@ class SensorResults:
         self.entries.extend(day_results.entries)
 
     def get(self, date_time):
-        """ Returns the first SensorEntry object that is equal to or greater
+        """Returns the first SensorEntry object that is equal to or greater
         than the given value of date_time.
         Returns None if there are no entries.
         """
@@ -72,7 +72,7 @@ class SensorResults:
 
 
 def load_day_results(path, location, file_date):
-    """ Loads a single file (one day) of results for a single sensor.
+    """Loads a single file (one day) of results for a single sensor.
     Returns an instance of SensorResults.
     """
     sensor_results = SensorResults(location)
@@ -106,7 +106,7 @@ def load_day_results(path, location, file_date):
 
 
 def load_results_for_location(path, location, date_from, date_to):
-    """ Returns a SensorResults object containing the data for the given range
+    """Returns a SensorResults object containing the data for the given range
     of dates.
     """
     # print(date_from, date_to)
@@ -121,9 +121,10 @@ def load_results_for_location(path, location, date_from, date_to):
 
 
 def load_results(path, date_from, date_to):
-    """ Returns a list of SensorResults objects, one per location.
+    """Returns a list of SensorResults objects, one per location.
     Each SensorResults object has the data for the given range of dates.
     """
+    print("Loading results from ", date_from, " to ", date_to)
     all_results = []
     for location in LOCATIONS:
         day_results = load_results_for_location(path, location, date_from, date_to)
@@ -132,7 +133,7 @@ def load_results(path, date_from, date_to):
 
 
 def merge_results(all_results, interval_minutes):
-    """ Merges all_results from external and all sensors into two lists, one
+    """Merges all_results from external and all sensors into two lists, one
     for temperature and the other for humidity.
     all_results is a list of SensorResults.
     Each SensorResults object has a list of SensorEntry values.
@@ -179,7 +180,7 @@ def merge_results(all_results, interval_minutes):
 
 
 def write_merged_results(results, file_path):
-    """ Writes the given results to a CSV file at the specified path.
+    """Writes the given results to a CSV file at the specified path.
     File has no header row.  Columns are:
         [datetime, external, sensor1, sensor2]
     """
@@ -191,7 +192,7 @@ def write_merged_results(results, file_path):
 
 
 def create_files_today():
-    """ Creates two results files (temperature and humidity) from external and
+    """Creates two results files (temperature and humidity) from external and
     other sensor data files.
     The columns in each results file are:
         datetime, external, <sensor1 location name>, ..., <sensorN location name>
@@ -207,16 +208,18 @@ def create_files_today():
 
 
 def create_files_seven_days():
-    """ Creates two results files (temperature and humidity) from external and
+    """Creates two results files (temperature and humidity) from external and
     other sensor data files for the previous seven days (not including today).
     The columns in each results file are:
         datetime, external, <sensor1 location name>, ..., <sensorN location name>
     """
     today = datetime.date.today()
-    # date_from = today - 1 day
-    # date_to = today - 8 day
-    interval_minutes = 30
-    all_results = load_results(__data_files_directory, date_from, date_to)
-    (humidity_results, temperature_results) = merge_results(all_results, interval_minutes)
+    datetime_from = datetime.datetime.combine(today, datetime.time(0, 0))
+    datetime_to = datetime_from + datetime.timedelta(days=7)
+    interval_minutes = 60
+    all_results = load_results(__data_files_directory, datetime_from, datetime_to)
+    (humidity_results, temperature_results) = merge_results(
+        all_results, interval_minutes
+    )
     write_merged_results(humidity_results, PATH_SEVEN_DAY_HUMIDITY)
     write_merged_results(temperature_results, PATH_SEVEN_DAY_TEMPERATURE)

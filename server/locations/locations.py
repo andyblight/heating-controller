@@ -5,11 +5,13 @@ web-ui applications.
 
 from dataclasses import dataclass
 
+
 @dataclass
 class Location:
-    """ Stores location related data.
+    """Stores location related data.
     dataclass creates an __init__ function that expects the four members.
     """
+
     name: str
     file_name: str
     ip_address: str
