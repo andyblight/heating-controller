@@ -12,7 +12,7 @@ import time
 import pandas
 
 # Local imports
-from locations import DATA_DIRECTORY
+from locations import DATA_STORE_PATH
 
 # INTERVAL_TIME_S = 5
 INTERVAL_TIME_S = 60 * 5
@@ -42,7 +42,7 @@ def open_file():
     # print("of")
     global f_today, f_csv_file, f_csv_writer
     f_today = date.today()
-    file_name = DATA_DIRECTORY + "/" + f_today.isoformat() + "-external" + ".csv"
+    file_name = DATA_STORE_PATH + "/" + f_today.isoformat() + "-external" + ".csv"
     try:
         f_csv_file = open(file_name, "a", newline="")
         f_csv_writer = csv.writer(

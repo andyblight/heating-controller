@@ -2,7 +2,8 @@
 This module is used to share the locations between the scrapers and the
 web-ui applications.
 """
-
+import os
+import pathlib
 from dataclasses import dataclass
 
 
@@ -27,4 +28,8 @@ LOCATIONS = [
 ]
 
 # Path to data directory.
-DATA_DIRECTORY = "../data"
+# File paths to use.
+__current_dir = os.path.dirname(os.path.abspath(__file__))
+__path = pathlib.Path(__current_dir)
+__parent_dir = __path.parent.parent
+DATA_STORE_PATH = os.path.join(__parent_dir, "data")

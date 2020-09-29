@@ -6,6 +6,7 @@ import app.prepare_data as pd
 import app.charts as charts
 from locations import Location, LOCATIONS
 
+# Use test data and temp directories.
 # Set up path to test data once.
 this_dir = os.path.dirname(os.path.abspath(__file__))
 data_path = this_dir + "/data"

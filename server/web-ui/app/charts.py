@@ -4,13 +4,12 @@ import gviz_api
 import os
 import pathlib
 import app.prepare_data as pd
-
+from locations import DATA_STORE_PATH
 
 # File paths to use.
 __current_dir = os.path.dirname(os.path.abspath(__file__))
 __path = pathlib.Path(__current_dir)
 __parent_dir = __path.parent.parent
-__data_files_path = os.path.join(__parent_dir, "data")
 __temp_data_path = os.path.join(__current_dir, "temp_data")
 
 # The paths rely on code in prepare_data.py so should be shared somehow.
@@ -78,7 +77,18 @@ def __prepare_todays_chart_data():
     start_date = end_date
     interval_minutes = 10
     pd.create_chart_files(
-        start_date, end_date, interval_minutes, __data_files_path, __temp_data_path
+        start_date, end_date, interval_minutes, DATA_STORE_PATH, __temp_data_path
+    )
+
+
+def __prepare_7_day_chart_data():
+    """ Prepares the previous 7 days of data. """
+    # Yesterday plus previous 6 days.
+    yesterday = datetime.datetime.today().date() - datetime.timedelta(days=1)
+    start_date = yesterday - datetime.timedelta(days=6)
+    interval_minutes = 60
+    pd.create_chart_files(
+        start_date, yesterday, interval_minutes, DATA_STORE_PATH, __temp_data_path
     )
 
 
@@ -106,17 +116,6 @@ def chart_today_humidity():
         columns_order=("time_of_day", "external", "sensor1", "sensor2"),
     )
     return jscode_today_humidity
-
-
-def __prepare_7_day_chart_data():
-    """ Prepares the previous 7 days of data. """
-    # Yesterday plus previous 6 days.
-    yesterday = datetime.datetime.today().date() - datetime.timedelta(days=1)
-    start_date = yesterday - datetime.timedelta(days=6)
-    interval_minutes = 60
-    pd.create_chart_files(
-        start_date, yesterday, interval_minutes, __data_files_path, __temp_data_path
-    )
 
 
 def chart_seven_temperature():

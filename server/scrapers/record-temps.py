@@ -9,7 +9,7 @@ import time
 # pip3 imports
 from bs4 import BeautifulSoup
 
-from locations import DATA_DIRECTORY, LOCATIONS
+from locations import DATA_STORE_PATH, LOCATIONS
 
 # INTERVAL_TIME_S = 5
 INTERVAL_TIME_S = 60 * 5
@@ -31,7 +31,12 @@ class TemperatureReader:
     def open_file(self):
         self.today = date.today()
         file_name = (
-            DATA_DIRECTORY + "/" + self.today.isoformat() + "-" + self.location + ".csv"
+            DATA_STORE_PATH
+            + "/"
+            + self.today.isoformat()
+            + "-"
+            + self.location
+            + ".csv"
         )
         self.csv_file = open(file_name, "a", newline="")
         self.csv_writer = csv.writer(
