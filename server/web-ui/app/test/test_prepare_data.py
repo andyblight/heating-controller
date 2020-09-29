@@ -23,28 +23,27 @@ class TestLoadDayResults(unittest.TestCase):
         # 08:21,20.6,73.8
         location = Location("", "downstairs-back-room", "", "")
         file_date = datetime.date(2020, 9, 3)
-        # print(file_name)
         day_results = pd.load_day_results(data_path, location, file_date)
         # Verify location.
         self.assertEqual(day_results.location, location, "Location wrong")
         # Verify SensorHeader contents.
-        # print("HEADER", day_results.header)
+        # print("HEADER", day_results.header, day_results.header.columns)
         header_columns = day_results.header.columns
-        self.assertEqual(header_columns[0], "Time", "Header 0 wrong")
+        self.assertEqual(header_columns[0], "DateTime", "Header 0 wrong")
         self.assertEqual(header_columns[1], "Temperature", "Header 1 wrong")
         self.assertEqual(header_columns[2], "Humidity", "Header 2 wrong")
         # Verify readings.
         # print("ENTRIES", day_results.entries)
         # Verify no header rows are in contents.
         for entry in day_results.entries:
-            self.assertNotEqual(entry.date_time, "Time", "Header in contents")
+            self.assertFalse(type(entry) == type(datetime.datetime), "Header in contents")
         # Verify number of rows.
         self.assertEqual(len(day_results.entries), 3, "Should be 3 rows")
-        # Verify row 1 contains 08:18,21.3,73.9.
-        entry = day_results.entries[1]
+        # Verify the entry for 08:18 contains 21.3,73.9.
         time = datetime.time(8, 18)
         expected_datetime = datetime.datetime.combine(file_date, time)
-        self.assertEqual(entry.date_time, expected_datetime, "Date time wrong")
+        entry = day_results.get(expected_datetime)
+        self.assertTrue(entry, "Entry not found")
         self.assertEqual(entry.temperature, 21.3, "Temperature wrong")
         self.assertEqual(entry.humidity, 73.9, "Humidity wrong")
 
@@ -58,21 +57,18 @@ class TestLoadDayResults(unittest.TestCase):
         # 08:21,20.2,68.1
         location = Location("", "upstairs-landing", "", "")
         file_date = datetime.date(2020, 9, 3)
-        # print(file_name)
         day_results = pd.load_day_results(data_path, location, file_date)
         # Verify readings.
-        # print("ENTRIES", day_results.entries)
         # Verify no header rows are in contents.
         for entry in day_results.entries:
-            self.assertNotEqual(entry.date_time, "Time", "Header in contents")
+            self.assertFalse(type(entry) == type(datetime.datetime), "Header in contents")
         # Verify number of rows.
         self.assertEqual(len(day_results.entries), 1, "Should be 1 row")
-        # Verify number of rows.
-        # Verify row 1 contains 08:21,20.2,68.1.
-        entry = day_results.entries[0]
+        # Verify the entry for 08:21 contains 20.2,68.1.
         time = datetime.time(8, 21)
         expected_datetime = datetime.datetime.combine(file_date, time)
-        self.assertEqual(entry.date_time, expected_datetime, "Date time wrong")
+        entry = day_results.get(expected_datetime)
+        self.assertTrue(entry, "Entry not found")
         self.assertEqual(entry.temperature, 20.2, "Temperature wrong")
         self.assertEqual(entry.humidity, 68.1, "Humidity wrong")
 
@@ -156,16 +152,27 @@ class TestLoadResults(unittest.TestCase):
             self.assertFalse(found, "Location not found")
 
 
+class TestWriteResults(unittest.TestCase):
+    def todo():
+        pass
+
+
 class TestMergeResults(unittest.TestCase):
+    """ Test the function merge_results. """
+
     def test_merge_one_day_full(self):
         date_from = datetime.date(2020, 8, 11)
         date_to = datetime.date(2020, 8, 11)
         raw_results = pd.load_results(data_path, date_from, date_to)
         # Merge results using 15 minute intervals.
-        (humidity, temperature) = pd.merge_results(raw_results, 15)
+        (humidity, temperature) = pd.merge_results(raw_results, 60)
         print("DESCRIPTION", charts_description)
-        print("Humidity", humidity)
-        print("Temperature", temperature)
+        print("Humidity")
+        for k, v in humidity.items():
+            print(k, v)
+        print("Temperature")
+        for k, v in temperature.items():
+            print(k, v)
         # # Output format has to be.
         # # description = {
         # #     "time_of_day": ("timeofday", "Time"),

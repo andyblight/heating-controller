@@ -17,7 +17,7 @@ sys.path.insert(0, __locations_dir)
 from locations import Location, LOCATIONS
 
 # File paths for charts.py to use.
-__data_files_directory = os.path.join(parent_dir, "data")
+__data_files_directory = os.path.join(__parent_dir, "data")
 __temp_data_directory = os.path.join(__current_dir, "temp_data")
 PATH_TODAY_HUMIDITY = os.path.join(__temp_data_directory, "today_humidity.csv")
 PATH_TODAY_TEMPERATURE = os.path.join(__temp_data_directory, "today_temperature.csv")
@@ -28,7 +28,7 @@ PATH_SEVEN_DAY_TEMPERATURE = os.path.join(__temp_data_directory, "seven_temperat
 class SensorHeader:
     def __init__(self):
         # Hardcoded for now.
-        self.columns = ["Time", "Temperature", "Humidity"]
+        self.columns = ["DateTime", "Temperature", "Humidity"]
 
 
 class SensorEntry:
@@ -44,15 +44,27 @@ class SensorResults:
     def __init__(self, location: Location):
         self.location = location
         self.header = SensorHeader()
-        self.entries = {}
+        self.entries = []
 
-    def append(self, entry):
-        self.entries[entry.date_time] = entry
+    def append(self, entry: SensorEntry):
+        self.entries.append(entry)
 
     def extend(self, day_results):
-        if self.location != day_results.location:
+        if type(day_results) is not type(self):
             raise ValueError
         self.entries.extend(day_results.entries)
+
+    def get(self, date_time):
+        """ Returns the first SensorEntry object that is equal to or greater
+        than the given value of date_time.
+        Returns None if there are no entries.
+        """
+        result = None
+        for entry in self.entries:
+            if entry.date_time >= date_time:
+                result = entry
+                break
+        return result
 
 
 def load_day_results(path, location, file_date):
@@ -119,7 +131,7 @@ def merge_results(all_results, interval_minutes):
     """ Merges all_results from external and all sensors into two lists, one
     for temperature and the other for humidity.
     all_results is a list of SensorResults.
-    Each SensorResults object has a dictionary of SensorEntry values.
+    Each SensorResults object has a list of SensorEntry values.
     Each SensorResults object has to be iterated over for each location,
     adding the entry closest to the datetime being requested to the entry in
     the results dictionary.
@@ -129,16 +141,34 @@ def merge_results(all_results, interval_minutes):
     """
     humidity_results = {}
     temperature_results = {}
-    for location_results in all_results:
-        HERE!!!
-
-# NEW
-    # for time in times_generator(use interval_minutes)
-    #     for location in loctions
-    #         look up entry using time as key into location dictionary. datetime is ok to use as a key directly.
-    #         use entry returned to fill out each results entry, temperature and humidity.
-    #     Append each results entry to results list.
-
+    # Use start and end times from external sensor data.
+    external_entries = all_results[0].entries
+    start_date = external_entries[0].date_time.date()
+    end_date = external_entries[-1].date_time.date()
+    end_date += datetime.timedelta(days=1)
+    start_datetime = datetime.datetime.combine(start_date, datetime.time(0, 0))
+    end_datetime = datetime.datetime.combine(end_date, datetime.time(0, 0))
+    interval_timedelta = datetime.timedelta(minutes=interval_minutes)
+    # Iterate by time intervals.
+    # print("Start", start_datetime, ", End", end_datetime)
+    while end_datetime > start_datetime:
+        # print("Start", start_datetime)
+        humidity_entry = []
+        temperature_entry = []
+        for location_results in all_results:
+            # Look up entry using time as key into location dictionary.
+            # datetime is ok to use as a key directly.
+            # print(location_results.entries)
+            location_entry = location_results.get(start_datetime)
+            # print(location_entry.date_time)
+            if location_entry:
+                humidity_entry.append(location_entry.humidity)
+                temperature_entry.append(location_entry.temperature)
+        # Insert entries into results lists.
+        humidity_results[start_datetime] = humidity_entry
+        temperature_results[start_datetime] = temperature_entry
+        # Next interval.
+        start_datetime += interval_timedelta
     return (humidity_results, temperature_results)
 
 
@@ -149,8 +179,8 @@ def write_results(results, file_path):
     """
     with open(file_path, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
+        # The entries are in the correct order, so write it to file.
         for entry in results:
-            # As the entry is in the correct order, write it to file.
             writer.writerow(entry)
 
 
@@ -175,10 +205,10 @@ def create_files_seven_days():
         datetime, external, <sensor1 location name>, ..., <sensorN location name>
     """
     today = datetime.date.today()
-    date_from = today - 1 day
-    date_to = today - 8 day
-    interval_minutes = 30
-    all_results = load_results(__data_files_directory, date_from, date_to)
-    (humidity_results, temperature_results) = merge_results(all_results, interval_minutes)
-    write_results(humidity_results, PATH_SEVEN_DAY_HUMIDITY)
-    write_results(temperature_results, PATH_SEVEN_DAY_TEMPERATURE)
+    # date_from = today - 1 day
+    # date_to = today - 8 day
+    # interval_minutes = 30
+    # all_results = load_results(__data_files_directory, date_from, date_to)
+    # (humidity_results, temperature_results) = merge_results(all_results, interval_minutes)
+    # write_results(humidity_results, PATH_SEVEN_DAY_HUMIDITY)
+    # write_results(temperature_results, PATH_SEVEN_DAY_TEMPERATURE)
