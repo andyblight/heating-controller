@@ -3,7 +3,6 @@ import datetime
 import os
 import unittest
 
-from app.prepare_data import FILE_SEVEN_DAYS_TEMPERATURE
 from app.charts import load_data_file
 
 # Set up path to test data once.
@@ -15,7 +14,7 @@ EMPTY_PATH = data_path + "/empty.csv"
 SINGLE_PATH = data_path + "/single.csv"
 TWO_PATH = data_path + "/two.csv"
 FIVE_PATH = data_path + "/five.csv"
-SEVEN_DAYS_PATH = data_path + "/" + FILE_SEVEN_DAYS_TEMPERATURE
+# SEVEN_DAYS_PATH = data_path + "/7days"
 
 temperature_data = [
     {
@@ -92,6 +91,7 @@ class TestChartsLoadData(unittest.TestCase):
     # def setUp(self):
     #     create_files()
 
+    # FIXME Implement real tests!
     def test_file_not_found(self):
         load_data_file(NOT_FOUND_PATH)
 
@@ -107,7 +107,6 @@ class TestChartsLoadData(unittest.TestCase):
     def test_five_entries(self):
         load_data_file(FIVE_PATH)
 
-    def test_seven_days(self):
-        """ Use a data file containing seven days of data. """
-        load_data_file(SEVEN_DAYS_PATH)
-
+    # def test_seven_days(self):
+    #     """ Use a data file containing seven days of data. """
+    #     load_data_file(SEVEN_DAYS_PATH)

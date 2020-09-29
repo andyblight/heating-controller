@@ -2,8 +2,22 @@ import csv
 import datetime
 import gviz_api
 import os
+import pathlib
 import app.prepare_data as pd
 
+
+# File paths to use.
+__current_dir = os.path.dirname(os.path.abspath(__file__))
+__path = pathlib.Path(__current_dir)
+__parent_dir = __path.parent.parent
+__data_files_path = os.path.join(__parent_dir, "data")
+__temp_data_path = os.path.join(__current_dir, "temp_data")
+
+# The paths rely on code in prepare_data.py so should be shared somehow.
+__path_today_humidity = os.path.join(__temp_data_path, "today_humidity.csv")
+__path_today_temperature = os.path.join(__temp_data_path, "today_temperature.csv")
+__path_7day_humidity = os.path.join(__temp_data_path, "7days_humidity.csv")
+__path_7day_temperature = os.path.join(__temp_data_path, "7days_temperature.csv")
 
 # Common description used to create the charts.
 description = {
@@ -58,10 +72,21 @@ def load_data_file(file_name):
     return data
 
 
+def __prepare_todays_chart_data():
+    """ Prepares todays data. """
+    end_date = datetime.datetime.today().date()
+    start_date = end_date
+    interval_minutes = 10
+    pd.create_chart_files(
+        start_date, end_date, interval_minutes, __data_files_path, __temp_data_path
+    )
+
+
 def chart_today_temperature():
+    __prepare_todays_chart_data()
+    data = load_data_file(__path_today_temperature)
+    # Draw chart.
     chart = gviz_api.DataTable(description)
-    pd.create_files_today()
-    data = load_data_file(pd.PATH_TODAY_TEMPERATURE)
     chart.LoadData(data)
     jscode_today_temperature = chart.ToJSCode(
         "jscode_chart_today_temperature",
@@ -71,9 +96,10 @@ def chart_today_temperature():
 
 
 def chart_today_humidity():
+    __prepare_todays_chart_data()
+    data = load_data_file(__path_today_humidity)
+    # Draw chart.
     chart = gviz_api.DataTable(description)
-    pd.create_files_today()
-    data = load_data_file(pd.PATH_TODAY_HUMIDITY)
     chart.LoadData(data)
     jscode_today_humidity = chart.ToJSCode(
         "jscode_chart_today_humidity",
@@ -82,9 +108,22 @@ def chart_today_humidity():
     return jscode_today_humidity
 
 
+def __prepare_7_day_chart_data():
+    """ Prepares the previous 7 days of data. """
+    # Yesterday plus previous 6 days.
+    yesterday = datetime.datetime.today().date() - datetime.timedelta(days=1)
+    start_date = yesterday - datetime.timedelta(days=6)
+    interval_minutes = 60
+    pd.create_chart_files(
+        start_date, yesterday, interval_minutes, __data_files_path, __temp_data_path
+    )
+
+
 def chart_seven_temperature():
+    __prepare_7_day_chart_data()
+    data = load_data_file(__path_7day_temperature)
+    # Draw chart.
     chart = gviz_api.DataTable(description)
-    data = load_data_file(pd.PATH_SEVEN_DAY_TEMPERATURE)
     chart.LoadData(data)
     jscode_seven_temperature = chart.ToJSCode(
         "jscode_chart_seven_temperature",
@@ -94,8 +133,10 @@ def chart_seven_temperature():
 
 
 def chart_seven_humidity():
+    __prepare_7_day_chart_data()
+    data = load_data_file(__path_7day_humidity)
+    # Draw chart.
     chart = gviz_api.DataTable(description)
-    data = load_data_file(pd.PATH_SEVEN_DAY_HUMIDITY)
     chart.LoadData(data)
     jscode_seven_humidity = chart.ToJSCode(
         "jscode_chart_seven_humidity",

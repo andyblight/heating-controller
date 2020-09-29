@@ -241,11 +241,23 @@ class TestWriteMergedResults(unittest.TestCase):
         )
 
 
-class TestChartsCreateFiles(unittest.TestCase):
+class TestCreateFiles(unittest.TestCase):
     """Test the functions create_files_today and create_files_seven_days."""
 
-    def test_create_files_today(self):
-        pass
+    # FIXME Implement real tests!
 
-    def test_create_files_seven_days(self):
-        pass
+    def test_create_chart_files_1_day(self):
+        end_date = datetime.date(2020, 8, 18)
+        start_date = end_date
+        interval_minutes = 10
+        pd.create_chart_files(
+            start_date, end_date, interval_minutes, data_path, temp_path
+        )
+
+    def test_create_chart_files_7_days(self):
+        end_date = datetime.date(2020, 8, 18)
+        start_date = end_date - datetime.timedelta(days=6)
+        interval_minutes = 60
+        pd.create_chart_files(
+            start_date, end_date, interval_minutes, data_path, temp_path
+        )

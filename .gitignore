@@ -6,3 +6,4 @@ server/data/*.csv
 *.tgz
 *.tar
 server/web-ui/app/test/temp/*.csv
+server/web-ui/app/temp_data/*.csv

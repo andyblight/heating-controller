@@ -18,16 +18,6 @@ sys.path.insert(0, __locations_dir)
 # print(sys.path)
 from locations import Location, LOCATIONS  # noqa: E402
 
-# File paths for charts.py to use.
-__data_files_directory = os.path.join(__parent_dir, "data")
-__temp_data_directory = os.path.join(__current_dir, "temp_data")
-PATH_TODAY_HUMIDITY = os.path.join(__temp_data_directory, "today_humidity.csv")
-PATH_TODAY_TEMPERATURE = os.path.join(__temp_data_directory, "today_temperature.csv")
-PATH_SEVEN_DAY_HUMIDITY = os.path.join(__temp_data_directory, "seven_humidity.csv")
-PATH_SEVEN_DAY_TEMPERATURE = os.path.join(
-    __temp_data_directory, "seven_temperature.csv"
-)
-
 
 class SensorHeader:
     def __init__(self):
@@ -112,17 +102,21 @@ def load_results_for_location(path, location, date_from, date_to):
     # print(date_from, date_to)
     location_results = SensorResults(location)
     step = datetime.timedelta(days=1)
-    while date_from <= date_to:
+    # Need to go through this loop at least once.
+    while True:
         # print(date_from.strftime('%Y_%m_%d'))
         day_results = load_day_results(path, location, date_from)
         location_results.extend(day_results)
         date_from += step
+        if date_from > date_to:
+            break
     return location_results
 
 
 def load_results(path, date_from, date_to):
     """Returns a list of SensorResults objects, one per location.
     Each SensorResults object has the data for the given range of dates.
+    Note: the dates are inclusive.
     """
     print("Loading results from ", date_from, " to ", date_to)
     all_results = []
@@ -191,35 +185,26 @@ def write_merged_results(results, file_path):
             writer.writerow(entry)
 
 
-def create_files_today():
+def create_chart_files(start_date, end_date, interval_minutes, data_path, temp_path):
     """Creates two results files (temperature and humidity) from external and
     other sensor data files.
+    The files are generated from data for the start_date and every subsequent
+    day __including__ the end_date.
     The columns in each results file are:
         datetime, external, <sensor1 location name>, ..., <sensorN location name>
     """
-    today = datetime.date.today()
-    interval_minutes = 10
-    all_results = load_results(__data_files_directory, today, today)
+    num_days = (end_date - start_date).days + 1
+    print("days:", num_days)
+    base_file_name = str(num_days) + "days"
+    if num_days == 1:
+        base_file_name = "today"
+    humidity_file_name = base_file_name + "_humidity.csv"
+    temperature_file_name = base_file_name + "_temperature.csv"
+    path_humidity = os.path.join(temp_path, humidity_file_name)
+    path_temperature = os.path.join(temp_path, temperature_file_name)
+    all_results = load_results(data_path, start_date, end_date)
     (humidity_results, temperature_results) = merge_results(
         all_results, interval_minutes
     )
-    write_merged_results(humidity_results, PATH_TODAY_HUMIDITY)
-    write_merged_results(temperature_results, PATH_TODAY_TEMPERATURE)
-
-
-def create_files_seven_days():
-    """Creates two results files (temperature and humidity) from external and
-    other sensor data files for the previous seven days (not including today).
-    The columns in each results file are:
-        datetime, external, <sensor1 location name>, ..., <sensorN location name>
-    """
-    today = datetime.date.today()
-    datetime_from = datetime.datetime.combine(today, datetime.time(0, 0))
-    datetime_to = datetime_from + datetime.timedelta(days=7)
-    interval_minutes = 60
-    all_results = load_results(__data_files_directory, datetime_from, datetime_to)
-    (humidity_results, temperature_results) = merge_results(
-        all_results, interval_minutes
-    )
-    write_merged_results(humidity_results, PATH_SEVEN_DAY_HUMIDITY)
-    write_merged_results(temperature_results, PATH_SEVEN_DAY_TEMPERATURE)
+    write_merged_results(humidity_results, path_humidity)
+    write_merged_results(temperature_results, path_temperature)
