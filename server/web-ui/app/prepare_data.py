@@ -2,7 +2,9 @@
 
 import csv
 import datetime
-import os, sys, pathlib
+import os
+import pathlib
+import sys
 
 # Add the locations directory to the system path so that the
 # locations package can be imported.
@@ -14,7 +16,7 @@ __locations_dir = os.path.join(__parent_dir, "locations")
 # print(locations_dir)
 sys.path.insert(0, __locations_dir)
 # print(sys.path)
-from locations import Location, LOCATIONS
+from locations import Location, LOCATIONS  # noqa: E402
 
 # File paths for charts.py to use.
 __data_files_directory = os.path.join(__parent_dir, "data")
@@ -22,7 +24,9 @@ __temp_data_directory = os.path.join(__current_dir, "temp_data")
 PATH_TODAY_HUMIDITY = os.path.join(__temp_data_directory, "today_humidity.csv")
 PATH_TODAY_TEMPERATURE = os.path.join(__temp_data_directory, "today_temperature.csv")
 PATH_SEVEN_DAY_HUMIDITY = os.path.join(__temp_data_directory, "seven_humidity.csv")
-PATH_SEVEN_DAY_TEMPERATURE = os.path.join(__temp_data_directory, "seven_temperature.csv")
+PATH_SEVEN_DAY_TEMPERATURE = os.path.join(
+    __temp_data_directory, "seven_temperature.csv"
+)
 
 
 class SensorHeader:
@@ -174,7 +178,7 @@ def merge_results(all_results, interval_minutes):
     return (humidity_results, temperature_results)
 
 
-def write_results(results, file_path):
+def write_merged_results(results, file_path):
     """ Writes the given results to a CSV file at the specified path.
     File has no header row.  Columns are:
         [datetime, external, sensor1, sensor2]
@@ -195,9 +199,11 @@ def create_files_today():
     today = datetime.date.today()
     interval_minutes = 10
     all_results = load_results(__data_files_directory, today, today)
-    (humidity_results, temperature_results) = merge_results(all_results, interval_minutes)
-    write_results(humidity_results, PATH_TODAY_HUMIDITY)
-    write_results(temperature_results, PATH_TODAY_TEMPERATURE)
+    (humidity_results, temperature_results) = merge_results(
+        all_results, interval_minutes
+    )
+    write_merged_results(humidity_results, PATH_TODAY_HUMIDITY)
+    write_merged_results(temperature_results, PATH_TODAY_TEMPERATURE)
 
 
 def create_files_seven_days():
@@ -209,8 +215,8 @@ def create_files_seven_days():
     today = datetime.date.today()
     # date_from = today - 1 day
     # date_to = today - 8 day
-    # interval_minutes = 30
-    # all_results = load_results(__data_files_directory, date_from, date_to)
-    # (humidity_results, temperature_results) = merge_results(all_results, interval_minutes)
-    # write_results(humidity_results, PATH_SEVEN_DAY_HUMIDITY)
-    # write_results(temperature_results, PATH_SEVEN_DAY_TEMPERATURE)
+    interval_minutes = 30
+    all_results = load_results(__data_files_directory, date_from, date_to)
+    (humidity_results, temperature_results) = merge_results(all_results, interval_minutes)
+    write_merged_results(humidity_results, PATH_SEVEN_DAY_HUMIDITY)
+    write_merged_results(temperature_results, PATH_SEVEN_DAY_TEMPERATURE)

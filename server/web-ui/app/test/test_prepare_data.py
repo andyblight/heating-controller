@@ -3,11 +3,13 @@ import os
 import unittest
 
 import app.prepare_data as pd
-from app.charts import description as charts_description
+import app.charts as charts
 from locations import Location, LOCATIONS
 
 # Set up path to test data once.
-data_path = os.path.dirname(os.path.abspath(__file__)) + "/data"
+this_dir = os.path.dirname(os.path.abspath(__file__))
+data_path = this_dir + "/data"
+temp_path = this_dir + "/temp"
 
 
 class TestLoadDayResults(unittest.TestCase):
@@ -36,7 +38,7 @@ class TestLoadDayResults(unittest.TestCase):
         # print("ENTRIES", day_results.entries)
         # Verify no header rows are in contents.
         for entry in day_results.entries:
-            self.assertFalse(type(entry) == type(datetime.datetime), "Header in contents")
+            self.assertFalse(isinstance(entry, datetime.datetime), "Header in contents")
         # Verify number of rows.
         self.assertEqual(len(day_results.entries), 3, "Should be 3 rows")
         # Verify the entry for 08:18 contains 21.3,73.9.
@@ -61,7 +63,7 @@ class TestLoadDayResults(unittest.TestCase):
         # Verify readings.
         # Verify no header rows are in contents.
         for entry in day_results.entries:
-            self.assertFalse(type(entry) == type(datetime.datetime), "Header in contents")
+            self.assertFalse(isinstance(entry, datetime.datetime), "Header in contents")
         # Verify number of rows.
         self.assertEqual(len(day_results.entries), 1, "Should be 1 row")
         # Verify the entry for 08:21 contains 20.2,68.1.
@@ -169,53 +171,71 @@ class TestMergeResults(unittest.TestCase):
         # for entry in temperature.items():
         #     print(entry)
         # Expect 24 results in humidity and temperature.
-        self.assertEqual(
-            len(humidity), 24, "Incorrect number of entries in humidity"
-        )
+        self.assertEqual(len(humidity), 24, "Incorrect number of entries in humidity")
         self.assertEqual(
             len(temperature), 24, "Incorrect number of entries in temperature"
         )
         # Expect the format to be a list.
         # Verify the 3rd humdity entry.
-        # 2020-08-11 02:00:00 [85.0, 66.3, 65.3]
+        # [2020-08-11 02:00:00, 85.0, 66.3, 65.3]
         entry = humidity[2]
         self.assertEqual(
             entry[0],
             datetime.datetime(year=2020, month=8, day=11, hour=2, minute=0, second=0),
-            "Humidity datetime did not match.")
+            "Humidity datetime did not match.",
+        )
         self.assertEqual(entry[1], 85.0, "Humidity external did not match.")
         self.assertEqual(entry[2], 66.3, "Humidity 1 did not match.")
         self.assertEqual(entry[3], 65.3, "Humidity 2 did not match.")
         # Verify the 23rd temperature entry.
-        # 2020-08-11 22:00:00 [21.0, 24.6, 25.6]
+        # [2020-08-11 22:00:00, 21.0, 24.6, 25.6]
         entry = temperature[22]
         self.assertEqual(
             entry[0],
             datetime.datetime(year=2020, month=8, day=11, hour=22, minute=0, second=0),
-            "Temperature datetime did not match.")
+            "Temperature datetime did not match.",
+        )
         self.assertEqual(entry[1], 21.0, "Temperature external did not match.")
         self.assertEqual(entry[2], 24.6, "Temperature 1 did not match.")
         self.assertEqual(entry[3], 25.6, "Temperature 2 did not match.")
 
 
-    # def test_merge_seven_days(self):
-    #     date_from = datetime.date(2020, 8, 11)
-    #     date_to = datetime.date(2020, 8, 17)
-    #     raw_results = load_results(data_path, date_from, date_to)
-    #     # Merge results using default.
-    #     results = merge_results(raw_results)
+class TestWriteMergedResults(unittest.TestCase):
+    """ Test the functions prepare_date.write_merged_results and
+    charts.load_data_file.
+    """
 
-    # def test_merge_one_day_part(self):
-    #     date_from = datetime.date(2020, 9, 3)
-    #     date_to = datetime.date(2020, 9, 3)
-    #     raw_results = load_results(data_path, date_from, date_to)
-    #     # Merge results using default.
-    #     results = merge_results(raw_results)
-
-class TestWriteResults(unittest.TestCase):
-    """ Test the function write_results. """
-
-    def todo():
-        pass
-
-
+    def test_short_file(self):
+        # Write the file.
+        results = [
+            [datetime.datetime(2020, 8, 11, 0, 0), 18.1, 23.2, 24.3],
+            [datetime.datetime(2020, 8, 11, 1, 0), 16.9, 23.1, 24.4],
+            [datetime.datetime(2020, 8, 11, 2, 0), 17.0, 22.9, 24.3],
+        ]
+        file_path = temp_path + "/short_test.csv"
+        pd.write_merged_results(results, file_path)
+        # Verify by loading the file and checking entries.
+        data = charts.load_data_file(file_path)
+        self.assertEqual(len(data), 3, "Incorrect number of entries")
+        # print(data)
+        entry = data[0]
+        self.assertEqual(
+            entry.get("time_of_day"),
+            datetime.datetime(2020, 8, 11, 0, 0),
+            "Datetime incorrect.",
+        )
+        self.assertEqual(entry.get("external"), 18.1, "External incorrect.")
+        self.assertEqual(entry.get("sensor1"), 23.2, "Sensor 1 incorrect.")
+        self.assertEqual(entry.get("sensor2"), 24.3, "Sensor 2 incorrect.")
+        entry = data[1]
+        self.assertEqual(
+            entry.get("time_of_day"),
+            datetime.datetime(2020, 8, 11, 1, 0),
+            "Datetime incorrect.",
+        )
+        entry = data[2]
+        self.assertEqual(
+            entry.get("time_of_day"),
+            datetime.datetime(2020, 8, 11, 2, 0),
+            "Datetime incorrect.",
+        )

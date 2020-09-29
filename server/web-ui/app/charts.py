@@ -2,7 +2,7 @@ import csv
 import datetime
 import gviz_api
 import os
-import app.prepare_data
+import app.prepare_data as pd
 
 
 # Common description used to create the charts.
@@ -19,10 +19,10 @@ def __convert_row(row):
       ['2020-09-22 08:30:00', '15.4', '20.1', '22.3']
     and needs to be formatted like this:
         {
-            "time_of_day": datetime.time(hour=11, minute=30),
-            "external": 60.5,
-            "sensor1": 80.8,
-            "sensor2": 81.2,
+            "time_of_day": datetime.datetime(2020, 9, 22, 8, 30),
+            "external": 15.4,
+            "sensor1": 20.1,
+            "sensor2": 22.3,
         }
     """
     entry = {}
@@ -60,8 +60,8 @@ def load_data_file(file_name):
 
 def chart_today_temperature():
     chart = gviz_api.DataTable(description)
-    prepare_data.create_files_today()
-    data = load_data_file(prepare_data.PATH_TODAY_TEMPERATURE)
+    pd.create_files_today()
+    data = load_data_file(pd.PATH_TODAY_TEMPERATURE)
     chart.LoadData(data)
     jscode_today_temperature = chart.ToJSCode(
         "jscode_chart_today_temperature",
@@ -72,8 +72,8 @@ def chart_today_temperature():
 
 def chart_today_humidity():
     chart = gviz_api.DataTable(description)
-    prepare_data.create_files_today()
-    data = load_data_file(prepare_data.PATH_TODAY_HUMIDITY)
+    pd.create_files_today()
+    data = load_data_file(pd.PATH_TODAY_HUMIDITY)
     chart.LoadData(data)
     jscode_today_humidity = chart.ToJSCode(
         "jscode_chart_today_humidity",
@@ -84,7 +84,7 @@ def chart_today_humidity():
 
 def chart_seven_temperature():
     chart = gviz_api.DataTable(description)
-    data = load_data_file(prepare_data.PATH_SEVEN_DAY_TEMPERATURE)
+    data = load_data_file(pd.PATH_SEVEN_DAY_TEMPERATURE)
     chart.LoadData(data)
     jscode_seven_temperature = chart.ToJSCode(
         "jscode_chart_seven_temperature",
@@ -95,7 +95,7 @@ def chart_seven_temperature():
 
 def chart_seven_humidity():
     chart = gviz_api.DataTable(description)
-    data = load_data_file(prepare_data.PATH_SEVEN_DAY_HUMIDITY)
+    data = load_data_file(pd.PATH_SEVEN_DAY_HUMIDITY)
     chart.LoadData(data)
     jscode_seven_humidity = chart.ToJSCode(
         "jscode_chart_seven_humidity",
