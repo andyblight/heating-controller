@@ -152,11 +152,6 @@ class TestLoadResults(unittest.TestCase):
             self.assertFalse(found, "Location not found")
 
 
-class TestWriteResults(unittest.TestCase):
-    def todo():
-        pass
-
-
 class TestMergeResults(unittest.TestCase):
     """ Test the function merge_results. """
 
@@ -164,39 +159,44 @@ class TestMergeResults(unittest.TestCase):
         date_from = datetime.date(2020, 8, 11)
         date_to = datetime.date(2020, 8, 11)
         raw_results = pd.load_results(data_path, date_from, date_to)
-        # Merge results using 15 minute intervals.
+        # Merge results using 60 minute intervals.
         (humidity, temperature) = pd.merge_results(raw_results, 60)
-        print("DESCRIPTION", charts_description)
-        print("Humidity")
-        for k, v in humidity.items():
-            print(k, v)
-        print("Temperature")
-        for k, v in temperature.items():
-            print(k, v)
-        # # Output format has to be.
-        # # description = {
-        # #     "time_of_day": ("timeofday", "Time"),
-        # #     "external": ("number", "External"),
-        # #     "sensor1": ("number", "Upstairs"),
-        # #     "sensor2": ("number", "Downstairs"),
-        # # }
-        # # data = [
-        # #     {
-        # #         "time_of_day": datetime.time(hour=10, minute=30),
-        # #         "external": 25.4,
-        # #         "sensor1": 57.0,
-        # #         "sensor2": 25.7,
-        # #     },
-        # #     {
-        # #         "time_of_day": datetime.time(hour=11, minute=30),
-        # #         "external": 11.7,
-        # #         "sensor1": 18.8,
-        # #         "sensor2": 10.5,
-        # #     },
-        # # ]
-        # self.assertEqual(
-        #     len(description), 4, "Incorrect number of entries in description"
-        # )
+        # print("DESCRIPTION", charts_description)
+        # print("Humidity")
+        # for entry in humidity.items():
+        #     print(entry)
+        # print("Temperature")
+        # for entry in temperature.items():
+        #     print(entry)
+        # Expect 24 results in humidity and temperature.
+        self.assertEqual(
+            len(humidity), 24, "Incorrect number of entries in humidity"
+        )
+        self.assertEqual(
+            len(temperature), 24, "Incorrect number of entries in temperature"
+        )
+        # Expect the format to be a list.
+        # Verify the 3rd humdity entry.
+        # 2020-08-11 02:00:00 [85.0, 66.3, 65.3]
+        entry = humidity[2]
+        self.assertEqual(
+            entry[0],
+            datetime.datetime(year=2020, month=8, day=11, hour=2, minute=0, second=0),
+            "Humidity datetime did not match.")
+        self.assertEqual(entry[1], 85.0, "Humidity external did not match.")
+        self.assertEqual(entry[2], 66.3, "Humidity 1 did not match.")
+        self.assertEqual(entry[3], 65.3, "Humidity 2 did not match.")
+        # Verify the 23rd temperature entry.
+        # 2020-08-11 22:00:00 [21.0, 24.6, 25.6]
+        entry = temperature[22]
+        self.assertEqual(
+            entry[0],
+            datetime.datetime(year=2020, month=8, day=11, hour=22, minute=0, second=0),
+            "Temperature datetime did not match.")
+        self.assertEqual(entry[1], 21.0, "Temperature external did not match.")
+        self.assertEqual(entry[2], 24.6, "Temperature 1 did not match.")
+        self.assertEqual(entry[3], 25.6, "Temperature 2 did not match.")
+
 
     # def test_merge_seven_days(self):
     #     date_from = datetime.date(2020, 8, 11)
@@ -211,3 +211,11 @@ class TestMergeResults(unittest.TestCase):
     #     raw_results = load_results(data_path, date_from, date_to)
     #     # Merge results using default.
     #     results = merge_results(raw_results)
+
+class TestWriteResults(unittest.TestCase):
+    """ Test the function write_results. """
+
+    def todo():
+        pass
+
+

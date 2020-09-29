@@ -139,8 +139,8 @@ def merge_results(all_results, interval_minutes):
     Each entry for humidity and temperature has the same order:
         [datetime, external, sensor1, sensor2]
     """
-    humidity_results = {}
-    temperature_results = {}
+    humidity_results = []
+    temperature_results = []
     # Use start and end times from external sensor data.
     external_entries = all_results[0].entries
     start_date = external_entries[0].date_time.date()
@@ -154,7 +154,9 @@ def merge_results(all_results, interval_minutes):
     while end_datetime > start_datetime:
         # print("Start", start_datetime)
         humidity_entry = []
+        humidity_entry.append(start_datetime)
         temperature_entry = []
+        temperature_entry.append(start_datetime)
         for location_results in all_results:
             # Look up entry using time as key into location dictionary.
             # datetime is ok to use as a key directly.
@@ -165,8 +167,8 @@ def merge_results(all_results, interval_minutes):
                 humidity_entry.append(location_entry.humidity)
                 temperature_entry.append(location_entry.temperature)
         # Insert entries into results lists.
-        humidity_results[start_datetime] = humidity_entry
-        temperature_results[start_datetime] = temperature_entry
+        humidity_results.append(humidity_entry)
+        temperature_results.append(temperature_entry)
         # Next interval.
         start_datetime += interval_timedelta
     return (humidity_results, temperature_results)
