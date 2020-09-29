@@ -32,4 +32,4 @@ LOCATIONS = [
 __current_dir = os.path.dirname(os.path.abspath(__file__))
 __path = pathlib.Path(__current_dir)
 __parent_dir = __path.parent.parent
-DATA_STORE_PATH = os.path.join(__parent_dir, "data")
+DATA_STORE_PATH = os.path.join(__parent_dir, "server/data")

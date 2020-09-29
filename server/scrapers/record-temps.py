@@ -2,14 +2,28 @@
 
 import csv
 from datetime import datetime, date
+import os
+import pathlib
 import requests
 import sched
+import sys
 import time
 
 # pip3 imports
 from bs4 import BeautifulSoup
 
-from locations import DATA_STORE_PATH, LOCATIONS
+# Add the locations directory to the system path so that the
+# locations package can be imported.
+__current_dir = os.path.dirname(os.path.abspath(__file__))
+# print(__current_dir)
+__path = pathlib.Path(__current_dir)
+__parent_dir = __path.parent
+# print(__parent_dir)
+__locations_dir = os.path.join(__parent_dir, "locations")
+# print(__locations_dir)
+sys.path.insert(0, __locations_dir)
+# print(sys.path)
+from locations import DATA_STORE_PATH, LOCATIONS, Location  # noqa: E402
 
 # INTERVAL_TIME_S = 5
 INTERVAL_TIME_S = 60 * 5
@@ -100,10 +114,11 @@ def timed_read(readers):
 
 def main():
     readers = []
-    for location, ip_address in LOCATIONS:
-        reader = TemperatureReader(location, ip_address)
-        reader.open_file()
-        readers.append(reader)
+    for location in LOCATIONS:
+        if location.ip_address != "":
+            reader = TemperatureReader(location.file_name, location.ip_address)
+            reader.open_file()
+            readers.append(reader)
     # Get pages.
     timed_read(readers)
     # Run until all actions complete.
